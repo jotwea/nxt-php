@@ -1,0 +1,56 @@
+{
+  "root": "packages/php-symfony",
+  "sourceRoot": "packages/php-symfony/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/php-symfony/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/php-symfony"],
+      "options": {
+        "jestConfig": "packages/php-symfony/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/node:package",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/php-symfony",
+        "tsConfig": "packages/php-symfony/tsconfig.lib.json",
+        "packageJson": "packages/php-symfony/package.json",
+        "main": "packages/php-symfony/src/index.ts",
+        "assets": [
+          "packages/php-symfony/*.md",
+          {
+            "input": "./packages/php-symfony/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/php-symfony/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/php-symfony",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./packages/php-symfony",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    }
+  },
+  "tags": []
+}
