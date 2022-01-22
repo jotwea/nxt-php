@@ -9,6 +9,8 @@ import {
 } from '@nrwl/devkit';
 import * as path from 'path';
 import { PhpSymfonyGeneratorSchema } from './schema';
+import {promisify} from "util";
+import {exec} from "child_process";
 
 interface NormalizedSchema extends PhpSymfonyGeneratorSchema {
   projectName: string;
@@ -65,9 +67,15 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
       build: {
         executor: '@nxt/php-symfony:build',
       },
+      test: {
+        executor: '@nxt/php-symfony:test',
+      },
     },
     tags: normalizedOptions.parsedTags,
   });
+  await promisify(exec)(`composer create-project symfony/skeleton ${normalizedOptions.projectRoot}`);
+  // await promisify(exec)(`cd ${normalizedOptions.projectRoot}`);
+  // await promisify(exec)(`composer require webapp`);
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
 }
