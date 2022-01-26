@@ -1,12 +1,4 @@
-import {
-  addProjectConfiguration,
-  formatFiles,
-  generateFiles,
-  getWorkspaceLayout,
-  names,
-  offsetFromRoot,
-  Tree,
-} from '@nrwl/devkit';
+import {addProjectConfiguration, formatFiles, generateFiles, getWorkspaceLayout, names, offsetFromRoot, Tree} from '@nrwl/devkit';
 import * as path from 'path';
 import { PhpSymfonyGeneratorSchema } from './schema';
 import {promisify} from "util";
@@ -19,19 +11,12 @@ interface NormalizedSchema extends PhpSymfonyGeneratorSchema {
   parsedTags: string[];
 }
 
-function normalizeOptions(
-  tree: Tree,
-  options: PhpSymfonyGeneratorSchema
-): NormalizedSchema {
+function normalizeOptions(tree: Tree, options: PhpSymfonyGeneratorSchema): NormalizedSchema {
   const name = names(options.name).fileName;
-  const projectDirectory = options.directory
-    ? `${names(options.directory).fileName}/${name}`
-    : name;
+  const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(tree).libsDir}/${projectDirectory}`;
-  const parsedTags = options.tags
-    ? options.tags.split(',').map((s) => s.trim())
-    : [];
+  const projectRoot = `${getWorkspaceLayout(tree).appsDir}/${projectDirectory}`;
+  const parsedTags = options.tags ? options.tags.split(',').map((s) => s.trim()) : [];
 
   return {
     ...options,
@@ -61,7 +46,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
-    projectType: 'library',
+    projectType: 'application',
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
@@ -74,8 +59,8 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
     tags: normalizedOptions.parsedTags,
   });
   await promisify(exec)(`composer create-project symfony/skeleton ${normalizedOptions.projectRoot}`);
-  // await promisify(exec)(`cd ${normalizedOptions.projectRoot}`);
-  // await promisify(exec)(`composer require webapp`);
+
+  await promisify(exec)(`composer require phpunit webapp`, { cwd: normalizedOptions.projectRoot });
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
 }

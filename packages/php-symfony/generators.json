@@ -3,10 +3,19 @@
   "name": "php-symfony",
   "version": "0.0.1",
   "generators": {
-    "php-symfony": {
-      "factory": "./src/generators/php-symfony/generator",
-      "schema": "./src/generators/php-symfony/schema.json",
-      "description": "php-symfony generator"
+    "application": {
+      "factory": "./src/generators/application/generator",
+      "schema": "./src/generators/application/schema.json",
+      "aliases": ["app"],
+      "x-type": "application",
+      "description": "Creates a PHP Symfony application."
+    },
+    "library": {
+      "factory": "./src/generators/library/generator",
+      "schema": "./src/generators/library/schema.json",
+      "aliases": ["lib"],
+      "x-type": "library",
+      "description": "Creates a PHP Symfony library."
     }
   }
 }
