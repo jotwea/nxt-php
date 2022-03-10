@@ -1,7 +1,50 @@
-# php-symfony
+# @nxt/php-symfony
 
-This library was generated with [Nx](https://nx.dev).
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-## Running unit tests
+An [Nx plugin](https://nx.dev) for developing applications and libraries using [PHP Symfony](https://symfony.com/).
 
-Run `nx test php-symfony` to execute the unit tests via [Jest](https://jestjs.io).
+## Table of Contents
+
+- [Usage](#usage)
+- [Maintainers](#maintainers)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Usage
+
+### Install plugin
+
+`npm install --save-dev @nxt/php-symfony`
+
+### Generate an application
+
+Run `nx g @nxt/php-symfony:app my-app` to generate a symfony application.
+
+### Generate a library
+
+Run `nx g @nxt/php-symfony:lib my-lib` to generate a symfony library.
+
+### Build
+
+Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+
+### Running unit tests
+
+Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+
+Run `nx affected:test` to execute the unit tests affected by a change.
+
+## Maintainers
+
+[@jotwea](https://github.com/jotwea)
+
+## Contributing
+
+PRs accepted.
+
+Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
+
+## License
+
+MIT © 2022 Josef Wagner
