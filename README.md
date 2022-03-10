@@ -1,4 +1,4 @@
-# Nxt
+# Nxt-php
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
@@ -6,7 +6,7 @@ A third-party [Nx plugin](https://nx.dev) for PHP Symfony. Maybe some more will 
 
 ## Table of Contents
 
-- [Nxtend](#nxt)
+- [Nxt-php](#nxt-php)
   - [Table of Contents](#table-of-contents)
   - [Plugins](#plugins)
   - [Maintainers](#maintainers)
@@ -17,7 +17,7 @@ A third-party [Nx plugin](https://nx.dev) for PHP Symfony. Maybe some more will 
 
 | Plugin                                                  | Description                                                                                       |
 |---------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| [`@nxt/php-symfony`](./packages/php-symfony/README.md)  | An Nx plugin for developing applications and libraries using [PHP Symfony](https://symfony.com/). |
+| [`@nxt-php/php-symfony`](./packages/php-symfony/README.md)  | An Nx plugin for developing applications and libraries using [PHP Symfony](https://symfony.com/). |
 
 ## Maintainers
 

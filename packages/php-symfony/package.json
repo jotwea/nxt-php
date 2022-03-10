@@ -1,7 +1,23 @@
 {
-  "name": "@nxt/php-symfony",
+  "name": "@nxt-php/php-symfony",
   "version": "0.1.0",
+  "description": "A third-party Nx plugin for PHP Symfony",
+  "author": {
+    "name": "Josef Wagner"
+  },
+  "homepage": "https://github.com/jotwea/nxt-php",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jotwea/nxt-php.git"
+  },
+  "license": "MIT",
   "main": "src/index.js",
   "generators": "./generators.json",
-  "executors": "./executors.json"
+  "executors": "./executors.json",
+  "dependencies": {
+    "@nrwl/devkit": "^13.0.0"
+  },
+  "peerDependencies": {
+    "@nrwl/workspace": "^13.0.0"
+  }
 }

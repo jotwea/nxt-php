@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "nxt/php-symfony": ["packages/php-symfony/src/index.ts"]
+      "nxt-php/php-symfony": ["packages/php-symfony/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

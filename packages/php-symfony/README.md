@@ -1,4 +1,4 @@
-# @nxt/php-symfony
+# @nxt-php/php-symfony
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
@@ -15,15 +15,15 @@ An [Nx plugin](https://nx.dev) for developing applications and libraries using [
 
 ### Install plugin
 
-`npm install --save-dev @nxt/php-symfony`
+`npm install --save-dev @nxt-php/php-symfony`
 
 ### Generate an application
 
-Run `nx g @nxt/php-symfony:app my-app` to generate a symfony application.
+Run `nx g @nxt-php/php-symfony:app my-app` to generate a symfony application.
 
 ### Generate a library
 
-Run `nx g @nxt/php-symfony:lib my-lib` to generate a symfony library.
+Run `nx g @nxt-php/php-symfony:lib my-lib` to generate a symfony library.
 
 ### Build
 

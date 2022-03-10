@@ -1,14 +1,14 @@
 {
-  "name": "nxt",
+  "name": "nxt-php",
   "version": "0.1.0",
   "description": "A third-party Nx plugin for PHP Symfony",
   "author": {
     "name": "Josef Wagner"
   },
-  "homepage": "https://github.com/jotwea/nxt",
+  "homepage": "https://github.com/jotwea/nxt-php",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jotwea/nxt.git"
+    "url": "git+https://github.com/jotwea/nxt-php.git"
   },
   "license": "MIT",
   "scripts": {

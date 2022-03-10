@@ -65,10 +65,10 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
-        executor: '@nxt/php-symfony:build',
+        executor: '@nxt-php/php-symfony:build',
       },
       test: {
-        executor: '@nxt/php-symfony:test',
+        executor: '@nxt-php/php-symfony:test',
       },
     },
     tags: normalizedOptions.parsedTags,

@@ -1,5 +1,5 @@
 {
-  "npmScope": "nxt",
+  "npmScope": "nxt-php",
   "affected": {
     "defaultBase": "main"
   },
