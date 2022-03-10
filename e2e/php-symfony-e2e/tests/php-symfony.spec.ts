@@ -1,14 +1,28 @@
-import {checkFilesExist, ensureNxProject, readJson, runNxCommandAsync, uniq} from '@nrwl/nx-plugin/testing';
+import {
+  checkFilesExist,
+  ensureNxProject,
+  readJson,
+  runNxCommandAsync,
+  uniq,
+} from '@nrwl/nx-plugin/testing';
 
 describe('php-symfony e2e', () => {
   it('should create php-symfony application', async () => {
     const projectName = uniq('php-symfony');
     ensureNxProject('@nxt/php-symfony', 'dist/packages/php-symfony');
-    await runNxCommandAsync(`generate @nxt/php-symfony:application ${projectName}`);
+    await runNxCommandAsync(
+      `generate @nxt/php-symfony:application ${projectName}`
+    );
 
     const result = await runNxCommandAsync(`build ${projectName}`);
     expect(() =>
-      checkFilesExist(`apps/${projectName}/composer.json`,`apps/${projectName}/composer.lock`,`apps/${projectName}/symfony.lock`,`apps/${projectName}/vendor`,`apps/${projectName}/bin/phpunit`)
+      checkFilesExist(
+        `apps/${projectName}/composer.json`,
+        `apps/${projectName}/composer.lock`,
+        `apps/${projectName}/symfony.lock`,
+        `apps/${projectName}/vendor`,
+        `apps/${projectName}/bin/phpunit`
+      )
     ).not.toThrow();
   }, 120000);
 
@@ -19,7 +33,13 @@ describe('php-symfony e2e', () => {
 
     const result = await runNxCommandAsync(`build ${projectName}`);
     expect(() =>
-      checkFilesExist(`libs/${projectName}/composer.json`,`libs/${projectName}/composer.lock`,`libs/${projectName}/symfony.lock`,`libs/${projectName}/vendor`,`libs/${projectName}/bin/phpunit`)
+      checkFilesExist(
+        `libs/${projectName}/composer.json`,
+        `libs/${projectName}/composer.lock`,
+        `libs/${projectName}/symfony.lock`,
+        `libs/${projectName}/vendor`,
+        `libs/${projectName}/bin/phpunit`
+      )
     ).not.toThrow();
   }, 120000);
 
@@ -47,5 +67,4 @@ describe('php-symfony e2e', () => {
       expect(project.tags).toEqual(['e2etag', 'e2ePackage']);
     }, 120000);
   });
-
 });

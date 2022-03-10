@@ -4,6 +4,14 @@ import { Tree, readProjectConfiguration } from '@nrwl/devkit';
 import generator from './generator';
 import { PhpSymfonyGeneratorSchema } from './schema';
 
+// mock exec of child_process
+jest.mock('child_process', () => ({
+  exec: jest.fn((command, options, callback) => {
+    callback(null, { stdout: '' });
+  }),
+}));
+import * as cp from 'child_process';
+
 describe('php-symfony generator', () => {
   let appTree: Tree;
   const options: PhpSymfonyGeneratorSchema = { name: 'test' };
@@ -14,6 +22,19 @@ describe('php-symfony generator', () => {
 
   it('should run successfully', async () => {
     await generator(appTree, options);
+
+    expect(cp.exec).toHaveBeenCalledTimes(2);
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer create-project symfony/skeleton libs/test`,
+      {},
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer require phpunit`,
+      { cwd: 'libs/test' },
+      expect.any(Function)
+    );
+
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();
   });
