@@ -30,22 +30,14 @@ const context: ExecutorContext = {
 };
 
 describe('Test Executor', () => {
-  beforeEach(async () => {
-    jest.spyOn(cp, 'exec');
-  });
-
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
-  it('can run', async () => {
+  it('can test', async () => {
     const output = await executor(options, context);
 
-    expect(cp.exec).toHaveBeenCalledWith(
-      `bin/phpunit`,
-      { cwd: '/root/apps/symfony' },
-      expect.any(Function)
-    );
+    expect(cp.exec).toHaveBeenCalledWith(`bin/phpunit`, { cwd: '/root/apps/symfony' }, expect.any(Function));
     expect(output.success).toBe(true);
   });
 });

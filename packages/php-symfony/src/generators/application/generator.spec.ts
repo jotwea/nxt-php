@@ -19,6 +19,9 @@ describe('php-symfony generator', () => {
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();
   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should run successfully', async () => {
     await generator(appTree, options);
@@ -29,11 +32,7 @@ describe('php-symfony generator', () => {
       {},
       expect.any(Function)
     );
-    expect(cp.exec).toHaveBeenCalledWith(
-      `composer require phpunit webapp`,
-      { cwd: 'apps/test' },
-      expect.any(Function)
-    );
+    expect(cp.exec).toHaveBeenCalledWith(`composer require phpunit webapp`, { cwd: 'apps/test' }, expect.any(Function));
 
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();

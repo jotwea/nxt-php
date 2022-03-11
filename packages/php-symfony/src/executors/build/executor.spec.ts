@@ -1,6 +1,7 @@
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 import { BuildExecutorSchema } from './schema';
 import executor from './executor';
+import * as cp from 'child_process';
 
 // mock exec of child_process
 jest.mock('child_process', () => ({
@@ -8,7 +9,6 @@ jest.mock('child_process', () => ({
     callback(null, { stdout: '' });
   }),
 }));
-import * as cp from 'child_process';
 
 const options: BuildExecutorSchema = {};
 const context: ExecutorContext = {
@@ -30,11 +30,49 @@ const context: ExecutorContext = {
 };
 
 describe('Build Executor', () => {
-  it('can run', async () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('can build dev', async () => {
     const output = await executor(options, context);
 
+    expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
-      `composer install`,
+      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
+      { cwd: '/root/apps/symfony' },
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer dump-autoload -a -o`,
+      { cwd: '/root/apps/symfony' },
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `bin/console assets:install --relative public --no-interaction`,
+      { cwd: '/root/apps/symfony' },
+      expect.any(Function)
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can build prod', async () => {
+    context.configurationName = 'production';
+    const output = await executor(options, context);
+
+    expect(cp.exec).toHaveBeenCalledTimes(3);
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
+      { cwd: '/root/apps/symfony' },
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer dump-autoload -a -o --no-dev`,
+      { cwd: '/root/apps/symfony' },
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `bin/console assets:install --relative public --no-interaction`,
       { cwd: '/root/apps/symfony' },
       expect.any(Function)
     );
