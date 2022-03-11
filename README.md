@@ -15,9 +15,9 @@ A third-party [Nx plugin](https://nx.dev) for PHP Symfony. Maybe some more will 
 
 ## Plugins
 
-| Plugin                                                  | Description                                                                                       |
-|---------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| [`@nxt-php/php-symfony`](./packages/php-symfony/README.md)  | An Nx plugin for developing applications and libraries using [PHP Symfony](https://symfony.com/). |
+| Plugin                                                     | Description                                                                                       |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [`@nxt-php/php-symfony`](./packages/php-symfony/README.md) | An Nx plugin for developing applications and libraries using [PHP Symfony](https://symfony.com/). |
 
 ## Maintainers
 

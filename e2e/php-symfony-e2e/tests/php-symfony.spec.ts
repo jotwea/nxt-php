@@ -29,7 +29,9 @@ describe('php-symfony e2e', () => {
   it('should create php-symfony library', async () => {
     const projectName = uniq('php-symfony');
     ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
-    await runNxCommandAsync(`generate @nxt-php/php-symfony:library ${projectName}`);
+    await runNxCommandAsync(
+      `generate @nxt-php/php-symfony:library ${projectName}`
+    );
 
     const result = await runNxCommandAsync(`build ${projectName}`);
     expect(() =>

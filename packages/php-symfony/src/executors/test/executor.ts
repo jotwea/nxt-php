@@ -10,9 +10,9 @@ export default async function runExecutor(
   const cwd = `${context.cwd}/${
     context.workspace.projects[context.projectName].root
   }`;
+
+  console.info('Test using phpunit');
   await promisify(exec)(`bin/phpunit`, { cwd });
 
-  return {
-    success: true,
-  };
+  return { success: true };
 }

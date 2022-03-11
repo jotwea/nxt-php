@@ -10,9 +10,24 @@ export default async function runExecutor(
   const cwd = `${context.cwd}/${
     context.workspace.projects[context.projectName].root
   }`;
-  await promisify(exec)(`composer install`, { cwd });
+  const devParams =
+    context.configurationName === 'production' ? ' --no-dev' : '';
 
-  return {
-    success: true,
-  };
+  let installParams =
+    '--prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts';
+  if (context.isVerbose) {
+    installParams += ' --verbose';
+  }
+
+  console.info('Install using composer.');
+  await promisify(exec)(`composer install ${installParams}${devParams}`, {
+    cwd,
+  });
+  await promisify(exec)(`composer dump-autoload -a -o${devParams}`, { cwd });
+  await promisify(exec)(
+    `bin/console assets:install --relative public --no-interaction`,
+    { cwd }
+  );
+
+  return { success: true };
 }

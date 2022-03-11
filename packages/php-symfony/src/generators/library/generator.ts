@@ -73,6 +73,9 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
     },
     tags: normalizedOptions.parsedTags,
   });
+
+  console.info('Setup PHP Symfony library.');
+
   await promisify(exec)(
     `composer create-project symfony/skeleton ${normalizedOptions.projectRoot}`,
     {}
@@ -80,6 +83,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
   await promisify(exec)(`composer require phpunit`, {
     cwd: normalizedOptions.projectRoot,
   });
+
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);
 }
