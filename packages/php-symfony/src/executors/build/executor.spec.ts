@@ -70,7 +70,7 @@ describe('Build Executor', () => {
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
-      `php bin/console assets:install --relative public --no-interaction`,
+      `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
       { cwd: expectedCwd },
       expect.any(Function)
     );
@@ -108,7 +108,7 @@ describe('Build Executor', () => {
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
-      `php bin/console assets:install --relative public --no-interaction`,
+      `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
       { cwd: expectedCwd },
       expect.any(Function)
     );

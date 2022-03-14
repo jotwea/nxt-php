@@ -6,6 +6,7 @@ import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 
 export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {
   const cwd = `${context.cwd}/${context.workspace.projects[context.projectName].root}`;
+  const envPrefix = context.configurationName === 'production' ? 'APP_ENV=prod ' : '';
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
   let installParams = '--prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts';
   if (context.isVerbose) {
@@ -15,7 +16,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
   console.info('Installing using composer...');
   await promisify(exec)(`composer install ${installParams}${devParams}`, { cwd });
   await promisify(exec)(`composer dump-autoload -a -o${devParams}`, { cwd });
-  await promisify(exec)(`php bin/console assets:install --relative public --no-interaction`, { cwd });
+  await promisify(exec)(`${envPrefix}php bin/console assets:install --relative public --no-interaction`, { cwd });
   console.info('Done installing using composer.');
 
   if (options.outputPath) {
