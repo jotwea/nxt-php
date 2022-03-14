@@ -72,9 +72,8 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
   console.info('Setup PHP Symfony application.');
 
   await promisify(exec)(`composer create-project symfony/skeleton ${normalizedOptions.projectRoot}`, {});
-  await promisify(exec)(`composer require phpunit webapp`, {
-    cwd: normalizedOptions.projectRoot,
-  });
+  await promisify(exec)(`composer require webapp`, { cwd: normalizedOptions.projectRoot });
+  await promisify(exec)(`composer require --dev symfony/test-pack`, { cwd: normalizedOptions.projectRoot });
 
   addFiles(tree, normalizedOptions);
   await formatFiles(tree);

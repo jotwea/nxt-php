@@ -26,13 +26,18 @@ describe('php-symfony generator', () => {
   it('should run successfully', async () => {
     await generator(appTree, options);
 
-    expect(cp.exec).toHaveBeenCalledTimes(2);
+    expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
       `composer create-project symfony/skeleton apps/test`,
       {},
       expect.any(Function)
     );
-    expect(cp.exec).toHaveBeenCalledWith(`composer require phpunit webapp`, { cwd: 'apps/test' }, expect.any(Function));
+    expect(cp.exec).toHaveBeenCalledWith(`composer require webapp`, { cwd: 'apps/test' }, expect.any(Function));
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer require --dev symfony/test-pack`,
+      { cwd: 'apps/test' },
+      expect.any(Function)
+    );
 
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();

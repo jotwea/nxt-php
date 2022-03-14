@@ -32,7 +32,11 @@ describe('php-symfony generator', () => {
       {},
       expect.any(Function)
     );
-    expect(cp.exec).toHaveBeenCalledWith(`composer require phpunit`, { cwd: 'libs/test' }, expect.any(Function));
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer require --dev symfony/test-pack`,
+      { cwd: 'libs/test' },
+      expect.any(Function)
+    );
 
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();

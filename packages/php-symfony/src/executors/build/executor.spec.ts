@@ -47,7 +47,7 @@ describe('Build Executor', () => {
     );
     expect(cp.exec).toHaveBeenCalledWith(`composer dump-autoload -a -o`, { cwd: expectedCwd }, expect.any(Function));
     expect(cp.exec).toHaveBeenCalledWith(
-      `bin/console assets:install --relative public --no-interaction`,
+      `php bin/console assets:install --relative public --no-interaction`,
       { cwd: expectedCwd },
       expect.any(Function)
     );
@@ -70,7 +70,7 @@ describe('Build Executor', () => {
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
-      `bin/console assets:install --relative public --no-interaction`,
+      `php bin/console assets:install --relative public --no-interaction`,
       { cwd: expectedCwd },
       expect.any(Function)
     );
@@ -108,7 +108,7 @@ describe('Build Executor', () => {
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
-      `bin/console assets:install --relative public --no-interaction`,
+      `php bin/console assets:install --relative public --no-interaction`,
       { cwd: expectedCwd },
       expect.any(Function)
     );

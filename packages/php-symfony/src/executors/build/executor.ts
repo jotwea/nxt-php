@@ -15,7 +15,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
   console.info('Installing using composer...');
   await promisify(exec)(`composer install ${installParams}${devParams}`, { cwd });
   await promisify(exec)(`composer dump-autoload -a -o${devParams}`, { cwd });
-  await promisify(exec)(`bin/console assets:install --relative public --no-interaction`, { cwd });
+  await promisify(exec)(`php bin/console assets:install --relative public --no-interaction`, { cwd });
   console.info('Done installing using composer.');
 
   if (options.outputPath) {
