@@ -56,6 +56,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
         executor: '@nxt-php/php-symfony:build',
         options: {
           outputPath: `dist/${normalizedOptions.projectRoot}`,
+          cleanDestinationDir: true,
         },
         configurations: {
           production: {},
