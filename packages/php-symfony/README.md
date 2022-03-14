@@ -6,10 +6,17 @@ An [Nx plugin](https://nx.dev) for developing applications and libraries using [
 
 ## Table of Contents
 
+- [Prerequisites](#prerequisites)
 - [Usage](#usage)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Prerequisites
+
+In order to use this plugin within your NX workspace, you need to do some manual steps which cannot be done by the plugin:
+- Install PHP 8.0.2 or higher and your required [PHP extensions](https://symfony.com/doc/current/setup.html#technical-requirements)
+- [Install Composer](https://getcomposer.org/download/), which is used to install PHP packages.
 
 ## Usage
 
