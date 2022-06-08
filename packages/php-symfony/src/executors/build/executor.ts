@@ -14,10 +14,10 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
   }
 
   console.info('Installing using composer...');
-  const execOptions = { cwd, env: {} }
-  await promisify(exec)(`composer install ${installParams}${devParams}`, execOptions);
-  await promisify(exec)(`composer dump-autoload -a -o${devParams}`, execOptions);
-  await promisify(exec)(`${envPrefix}php bin/console assets:install --relative public --no-interaction`, execOptions);
+  const phpOptions = { cwd, env: {} } // do not pass env of the node universe to the php/symfony universe
+  await promisify(exec)(`composer install ${installParams}${devParams}`, { cwd } );
+  await promisify(exec)(`composer dump-autoload -a -o${devParams}`, { cwd } );
+  await promisify(exec)(`${envPrefix}php bin/console assets:install --relative public --no-interaction`, phpOptions);
   console.info('Done installing using composer.');
 
   if (options.outputPath) {

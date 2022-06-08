@@ -31,7 +31,7 @@ const context: ExecutorContext = {
 };
 
 const expectedCwd = '/root/apps/symfony';
-const expectedOptions = { cwd: expectedCwd, env: {} };
+const phpOptions = { cwd: expectedCwd, env: {} };
 
 describe('Build Executor', () => {
   afterEach(() => {
@@ -44,13 +44,13 @@ describe('Build Executor', () => {
     expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
-      expectedOptions,
+      { cwd: expectedCwd },
       expect.any(Function)
     );
-    expect(cp.exec).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions, expect.any(Function));
+    expect(cp.exec).toHaveBeenCalledWith(`composer dump-autoload -a -o`, { cwd: expectedCwd }, expect.any(Function));
     expect(cp.exec).toHaveBeenCalledWith(
       `php bin/console assets:install --relative public --no-interaction`,
-      expectedOptions,
+      phpOptions,
       expect.any(Function)
     );
     expect(output.success).toBe(true);
@@ -63,17 +63,17 @@ describe('Build Executor', () => {
     expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
-      expectedOptions,
+      { cwd: expectedCwd },
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `composer dump-autoload -a -o --no-dev`,
-      expectedOptions,
+      { cwd: expectedCwd },
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
-      expectedOptions,
+      phpOptions,
       expect.any(Function)
     );
     expect(output.success).toBe(true);
@@ -101,17 +101,17 @@ describe('Build Executor', () => {
     expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
-      expectedOptions,
+      { cwd: expectedCwd },
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `composer dump-autoload -a -o --no-dev`,
-      expectedOptions,
+      { cwd: expectedCwd },
       expect.any(Function)
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
-      expectedOptions,
+      phpOptions,
       expect.any(Function)
     );
     expect(output.success).toBe(true);
