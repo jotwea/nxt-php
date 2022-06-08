@@ -1,6 +1,6 @@
 {
   "name": "@nxt-php/php-symfony",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A third-party Nx plugin for PHP Symfony",
   "author": {
     "name": "Josef Wagner"
