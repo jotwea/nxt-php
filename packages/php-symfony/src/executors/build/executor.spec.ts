@@ -1,5 +1,4 @@
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
-import * as cp from 'child_process';
 import * as fs from 'fs';
 import { BuildExecutorSchema } from './schema';
 import executor from './executor';
@@ -7,31 +6,42 @@ import executor from './executor';
 // mock exec of child_process
 jest.mock('child_process', () => ({
   exec: jest.fn((command, options, callback) => {
-    callback(null, { stdout: '' });
+    callback && callback(null, { stdout: '' });
+  }),
+  execSync: jest.fn((command, options, callback) => {
+    callback && callback(null, { stdout: '' });
   }),
 }));
 
-const options: BuildExecutorSchema = {};
-const context: ExecutorContext = {
-  root: '/root',
-  cwd: '/root',
-  projectName: 'my-app',
-  targetName: 'build',
-  workspace: {
-    version: 2,
-    projects: {
-      'my-app': <any>{
-        root: 'apps/symfony',
-        sourceRoot: 'apps/symfony',
-      },
-    },
-    npmScope: 'test',
-  },
-  isVerbose: false,
-};
+import * as cp from 'child_process';
 
-const expectedCwd = '/root/apps/symfony';
-const phpOptions = { cwd: expectedCwd, env: {} };
+const expectedEnv = { HOME: expect.any(String), PATH: expect.any(String), PHP_INI_DIR: expect.any(String) };
+const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
+const expectedProdOptions = { cwd: '/root/apps/symfony', env: { APP_ENV: 'prod', ...expectedEnv }, stdio: 'inherit' };
+
+let options: BuildExecutorSchema;
+let context: ExecutorContext;
+
+beforeEach(() => {
+  options = {};
+  context = {
+    root: '/root',
+    cwd: '/root',
+    projectName: 'my-app',
+    targetName: 'build',
+    workspace: {
+      version: 2,
+      projects: {
+        'my-app': <any>{
+          root: 'apps/symfony',
+          sourceRoot: 'apps/symfony',
+        },
+      },
+      npmScope: 'test',
+    },
+    isVerbose: false,
+  };
+});
 
 describe('Build Executor', () => {
   afterEach(() => {
@@ -41,17 +51,15 @@ describe('Build Executor', () => {
   it('can build dev', async () => {
     const output = await executor(options, context);
 
-    expect(cp.exec).toHaveBeenCalledTimes(3);
-    expect(cp.exec).toHaveBeenCalledWith(
+    expect(cp.execSync).toHaveBeenCalledTimes(3);
+    expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
-      { cwd: expectedCwd },
-      expect.any(Function)
+      expectedOptions
     );
-    expect(cp.exec).toHaveBeenCalledWith(`composer dump-autoload -a -o`, { cwd: expectedCwd }, expect.any(Function));
-    expect(cp.exec).toHaveBeenCalledWith(
+    expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
+    expect(cp.execSync).toHaveBeenCalledWith(
       `php bin/console assets:install --relative public --no-interaction`,
-      phpOptions,
-      expect.any(Function)
+      expectedOptions
     );
     expect(output.success).toBe(true);
   });
@@ -60,21 +68,15 @@ describe('Build Executor', () => {
     context.configurationName = 'production';
     const output = await executor(options, context);
 
-    expect(cp.exec).toHaveBeenCalledTimes(3);
-    expect(cp.exec).toHaveBeenCalledWith(
+    expect(cp.execSync).toHaveBeenCalledTimes(3);
+    expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
-      { cwd: expectedCwd },
-      expect.any(Function)
+      expectedProdOptions
     );
-    expect(cp.exec).toHaveBeenCalledWith(
-      `composer dump-autoload -a -o --no-dev`,
-      { cwd: expectedCwd },
-      expect.any(Function)
-    );
-    expect(cp.exec).toHaveBeenCalledWith(
-      `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
-      phpOptions,
-      expect.any(Function)
+    expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `php bin/console assets:install --relative public --no-interaction`,
+      expectedProdOptions
     );
     expect(output.success).toBe(true);
   });
@@ -96,23 +98,17 @@ describe('Build Executor', () => {
     expect(spyOnMkdir).toHaveBeenCalledTimes(1);
     expect(spyOnMkdir).toHaveBeenCalledWith(dist, { recursive: true });
     expect(spyOnCopy).toHaveBeenCalledTimes(1);
-    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedCwd}/`, `${dist}/`, { recursive: true });
+    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedOptions.cwd}/`, `${dist}/`, { recursive: true });
 
-    expect(cp.exec).toHaveBeenCalledTimes(3);
-    expect(cp.exec).toHaveBeenCalledWith(
+    expect(cp.execSync).toHaveBeenCalledTimes(3);
+    expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
-      { cwd: expectedCwd },
-      expect.any(Function)
+      expectedProdOptions
     );
-    expect(cp.exec).toHaveBeenCalledWith(
-      `composer dump-autoload -a -o --no-dev`,
-      { cwd: expectedCwd },
-      expect.any(Function)
-    );
-    expect(cp.exec).toHaveBeenCalledWith(
-      `APP_ENV=prod php bin/console assets:install --relative public --no-interaction`,
-      phpOptions,
-      expect.any(Function)
+    expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `php bin/console assets:install --relative public --no-interaction`,
+      expectedProdOptions
     );
     expect(output.success).toBe(true);
   });
@@ -132,7 +128,7 @@ describe('Build Executor', () => {
     expect(spyOnRemove).toHaveBeenCalledWith(dist, { recursive: true, force: true });
     expect(spyOnExists).toHaveBeenCalledTimes(2);
     expect(spyOnCopy).toHaveBeenCalledTimes(1);
-    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedCwd}/`, `${dist}/`, { recursive: true });
+    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedOptions.cwd}/`, `${dist}/`, { recursive: true });
     expect(output.success).toBe(true);
   });
 });

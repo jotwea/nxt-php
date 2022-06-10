@@ -1,23 +1,17 @@
 import { BuildExecutorSchema } from './schema';
 import * as fs from 'fs';
-import { promisify } from 'util';
-import { exec } from 'child_process';
+import { composerInstall, getExecutorOptions } from '../utils/executor-utils';
+import { execSync } from 'child_process';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 
 export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {
-  const cwd = `${context.cwd}/${context.workspace.projects[context.projectName].root}`;
-  const envPrefix = context.configurationName === 'production' ? 'APP_ENV=prod ' : '';
+  const executorContext = getExecutorOptions(context);
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
-  let installParams = '--prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts';
-  if (context.isVerbose) {
-    installParams += ' -vvv';
-  }
 
   console.info('Installing using composer...');
-  const phpOptions = { cwd, env: {} } // do not pass env of the node universe to the php/symfony universe
-  await promisify(exec)(`composer install ${installParams}${devParams}`, { cwd } );
-  await promisify(exec)(`composer dump-autoload -a -o${devParams}`, { cwd } );
-  await promisify(exec)(`${envPrefix}php bin/console assets:install --relative public --no-interaction`, phpOptions);
+  composerInstall(context);
+  execSync(`composer dump-autoload -a -o${devParams}`, executorContext);
+  execSync(`php bin/console assets:install --relative public --no-interaction`, executorContext);
   console.info('Done installing using composer.');
 
   if (options.outputPath) {
@@ -33,7 +27,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
     }
 
     console.info(`Copying files to output path "${options.outputPath}"...`);
-    fs.cpSync(`${cwd}/`, `${dest}/`, { recursive: true });
+    fs.cpSync(`${executorContext.cwd}/`, `${dest}/`, { recursive: true });
     console.info(`Done copying files.`);
   }
 
