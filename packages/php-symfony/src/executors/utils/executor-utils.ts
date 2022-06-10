@@ -1,8 +1,12 @@
 import { execSync, ExecSyncOptions } from 'child_process';
 import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
 
+export function getProjectPath(context: ExecutorContext): string {
+  return context.workspace.projects[context.projectName].root;
+}
+
 export function getCwd(context: ExecutorContext): string {
-  return `${context.cwd}/${context.workspace.projects[context.projectName].root}`;
+  return `${context.cwd}/${getProjectPath(context)}`;
 }
 
 export function getEnv(): NodeJS.ProcessEnv {
@@ -23,7 +27,7 @@ export function composerInstall(context: ExecutorContext) {
   const installParams = ['--prefer-dist', '--no-progress', '--no-interaction', '--optimize-autoloader', '--no-scripts'];
   if (context.configurationName === 'production') {
     installParams.push('--no-dev');
-  } 
+  }
   if (context.isVerbose) {
     installParams.push('-vvv');
   }
