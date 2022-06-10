@@ -10,7 +10,7 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
   let installParams = '--prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts';
   if (context.isVerbose) {
-    installParams += ' --verbose';
+    installParams += ' -vvv';
   }
 
   console.info('Installing using composer...');

@@ -1,1 +1,4 @@
-export interface TestExecutorSchema {} // eslint-disable-line
+export interface TestExecutorSchema {
+  codeCoverage?: boolean,
+  ci?: boolean,
+}
