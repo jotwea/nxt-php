@@ -8,11 +8,11 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
   const executorContext = getExecutorOptions(context);
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
 
-  console.info('Installing using composer...');
+  console.info('Building ...');
   composerInstall(context);
   execSync(`composer dump-autoload -a -o${devParams}`, executorContext);
   execSync(`php bin/console assets:install --relative public --no-interaction`, executorContext);
-  console.info('Done installing using composer.');
+  console.info('Done building.');
 
   if (options.outputPath) {
     const dest = `${context.cwd}/${options.outputPath}`;
