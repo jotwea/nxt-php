@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import { ExecutorContext } from '@nrwl/devkit';
 import { TestExecutorSchema } from './schema';
 import executor from './executor';
 

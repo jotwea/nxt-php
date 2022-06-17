@@ -1,5 +1,5 @@
 import { execSync, ExecSyncOptions } from 'child_process';
-import { ExecutorContext } from '@nrwl/tao/src/shared/workspace';
+import { ExecutorContext } from '@nrwl/devkit';
 
 export function getProjectPath(context: ExecutorContext): string {
   return context.workspace.projects[context.projectName].root;
