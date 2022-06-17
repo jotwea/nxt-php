@@ -26,7 +26,7 @@ describe('php-symfony generator', () => {
   it('should run successfully', async () => {
     await generator(appTree, options);
 
-    expect(cp.exec).toHaveBeenCalledTimes(2);
+    expect(cp.exec).toHaveBeenCalledTimes(3);
     expect(cp.exec).toHaveBeenCalledWith(
       `composer create-project symfony/skeleton libs/test`,
       {},
@@ -34,6 +34,11 @@ describe('php-symfony generator', () => {
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `composer require --dev symfony/test-pack`,
+      { cwd: 'libs/test' },
+      expect.any(Function)
+    );
+    expect(cp.exec).toHaveBeenCalledWith(
+      `composer require --dev php-parallel-lint/php-parallel-lint php-parallel-lint/php-console-highlighter`,
       { cwd: 'libs/test' },
       expect.any(Function)
     );
