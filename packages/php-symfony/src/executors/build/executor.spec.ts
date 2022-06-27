@@ -75,7 +75,7 @@ describe('Build Executor', () => {
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `php bin/console assets:install --relative public --no-interaction`,
+      `php bin/console assets:install public --no-interaction`,
       expectedProdOptions
     );
     expect(output.success).toBe(true);
@@ -107,7 +107,7 @@ describe('Build Executor', () => {
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `php bin/console assets:install --relative public --no-interaction`,
+      `php bin/console assets:install public --no-interaction`,
       expectedProdOptions
     );
     expect(output.success).toBe(true);

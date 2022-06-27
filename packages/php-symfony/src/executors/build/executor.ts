@@ -7,11 +7,12 @@ import { ExecutorContext } from '@nrwl/devkit';
 export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {
   const executorContext = getExecutorOptions(context);
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
+  const assetParams = context.configurationName === 'production' ? '' : ' --relative';
 
   console.info('Building ...');
   composerInstall(context);
   execSync(`composer dump-autoload -a -o${devParams}`, executorContext);
-  execSync(`php bin/console assets:install --relative public --no-interaction`, executorContext);
+  execSync(`php bin/console assets:install${assetParams} public --no-interaction`, executorContext);
   console.info('Done building.');
 
   if (options.outputPath) {
