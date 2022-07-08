@@ -17,6 +17,7 @@ describe('php-symfony e2e', () => {
           `apps/${projectName}/composer.lock`,
           `apps/${projectName}/symfony.lock`,
           `apps/${projectName}/vendor`,
+          `apps/${projectName}/bin/console`,
           `apps/${projectName}/bin/phpunit`
         )
       ).not.toThrow();
@@ -38,6 +39,7 @@ describe('php-symfony e2e', () => {
           `libs/${projectName}/composer.lock`,
           `libs/${projectName}/symfony.lock`,
           `libs/${projectName}/vendor`,
+          `apps/${projectName}/bin/console`,
           `libs/${projectName}/bin/phpunit`
         )
       ).not.toThrow();

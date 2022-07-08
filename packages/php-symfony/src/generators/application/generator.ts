@@ -62,6 +62,9 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
           production: {},
         },
       },
+      lint: {
+        executor: '@nxt-php/php-symfony:lint',
+      },
       test: {
         executor: '@nxt-php/php-symfony:test',
       },
