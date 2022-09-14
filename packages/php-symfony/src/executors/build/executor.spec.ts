@@ -48,7 +48,20 @@ describe('Build Executor', () => {
     jest.clearAllMocks();
   });
 
+  it('can build plain PHP', async () => {
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(2);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
+      expectedOptions
+    );
+    expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
+    expect(output.success).toBe(true);
+  });
+
   it('can build dev', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
@@ -65,6 +78,7 @@ describe('Build Executor', () => {
   });
 
   it('can build prod', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
     context.configurationName = 'production';
     const output = await executor(options, context);
 
@@ -82,8 +96,8 @@ describe('Build Executor', () => {
   });
 
   it('can build prod to outputPath', async () => {
+    const spyOnExists = jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
     const spyOnRemove = jest.spyOn(fs, 'rmSync').mockReturnValue();
-    const spyOnExists = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
     const spyOnMkdir = jest.spyOn(fs, 'mkdirSync').mockReturnValue('/root');
     const spyOnCopy = jest.spyOn(fs, 'cpSync').mockReturnValue();
 
@@ -93,7 +107,7 @@ describe('Build Executor', () => {
     const output = await executor(options, context);
 
     expect(spyOnRemove).not.toHaveBeenCalled();
-    expect(spyOnExists).toHaveBeenCalledTimes(1);
+    expect(spyOnExists).toHaveBeenCalledTimes(2);
     expect(spyOnExists).toHaveBeenCalledWith(dist);
     expect(spyOnMkdir).toHaveBeenCalledTimes(1);
     expect(spyOnMkdir).toHaveBeenCalledWith(dist, { recursive: true });
@@ -126,7 +140,7 @@ describe('Build Executor', () => {
 
     expect(spyOnRemove).toHaveBeenCalledTimes(1);
     expect(spyOnRemove).toHaveBeenCalledWith(dist, { recursive: true, force: true });
-    expect(spyOnExists).toHaveBeenCalledTimes(2);
+    expect(spyOnExists).toHaveBeenCalledTimes(3);
     expect(spyOnCopy).toHaveBeenCalledTimes(1);
     expect(spyOnCopy).toHaveBeenCalledWith(`${expectedOptions.cwd}/`, `${dist}/`, { recursive: true });
     expect(output.success).toBe(true);

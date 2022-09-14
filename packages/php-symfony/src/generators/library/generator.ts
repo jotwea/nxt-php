@@ -49,7 +49,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
   const normalizedOptions = normalizeOptions(tree, options);
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
-    projectType: 'application',
+    projectType: 'library',
     sourceRoot: `${normalizedOptions.projectRoot}/src`,
     targets: {
       build: {
@@ -61,6 +61,9 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
         configurations: {
           production: {},
         },
+      },
+      lint: {
+        executor: '@nxt-php/php-symfony:lint',
       },
       test: {
         executor: '@nxt-php/php-symfony:test',

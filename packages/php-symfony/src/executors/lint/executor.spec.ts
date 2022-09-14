@@ -57,7 +57,15 @@ describe('Lint Executor', () => {
     jest.clearAllMocks();
   });
 
+  it('can lint [PHP only]', async () => {
+    const output = await executor(options, context);
+
+    expect(cp.execSync).not.toHaveBeenCalled();
+    expect(output.success).toBe(true);
+  });
+
   it('can lint [container only]', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
@@ -66,7 +74,7 @@ describe('Lint Executor', () => {
   });
 
   it('can lint [PHP+container]', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/parallel-lint');
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/bin/parallel-lint');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
@@ -76,7 +84,7 @@ describe('Lint Executor', () => {
   });
 
   it('can lint [container+Twig]', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/symfony/twig-bundle');
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/twig-bundle');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
@@ -89,7 +97,7 @@ describe('Lint Executor', () => {
   });
 
   it('can lint [container+YAML]', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/symfony/yaml');
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/yaml');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
@@ -101,7 +109,7 @@ describe('Lint Executor', () => {
   it('can lint [container+doctrine]', async () => {
     jest
       .spyOn(fs, 'existsSync')
-      .mockImplementation((path) => path === '/root/apps/symfony/vendor/doctrine/doctrine-bundle');
+      .mockImplementation((path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/doctrine/doctrine-bundle');
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);

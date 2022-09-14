@@ -24,28 +24,30 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
     );
   }
 
-  console.info('Linting container...');
-  execSync(`php bin/console lint:container ${lintParams.join(' ')}`.trim(), getExecutorOptions(context));
+  if (existsSync(`${cwd}/bin/console`)) {
+    console.info('Linting container...');
+    execSync(`php bin/console lint:container ${lintParams.join(' ')}`.trim(), getExecutorOptions(context));
 
-  if (existsSync(`${cwd}/vendor/symfony/yaml`)) {
-    console.info('Linting YAML...');
-    execSync(
-      `php bin/console lint:yaml --parse-tags ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
-      getExecutorOptions(context)
-    );
-  }
+    if (existsSync(`${cwd}/vendor/symfony/yaml`)) {
+      console.info('Linting YAML...');
+      execSync(
+        `php bin/console lint:yaml --parse-tags ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
+        getExecutorOptions(context)
+      );
+    }
 
-  if (existsSync(`${cwd}/vendor/symfony/twig-bundle`)) {
-    console.info('Linting Twig...');
-    execSync(
-      `php bin/console lint:twig --show-deprecations ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
-      getExecutorOptions(context)
-    );
-  }
+    if (existsSync(`${cwd}/vendor/symfony/twig-bundle`)) {
+      console.info('Linting Twig...');
+      execSync(
+        `php bin/console lint:twig --show-deprecations ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
+        getExecutorOptions(context)
+      );
+    }
 
-  if (existsSync(`${cwd}/vendor/doctrine/doctrine-bundle`)) {
-    console.info('Linting Doctrine schema...');
-    execSync(`php bin/console doctrine:schema:validate --skip-sync`, getExecutorOptions(context));
+    if (existsSync(`${cwd}/vendor/doctrine/doctrine-bundle`)) {
+      console.info('Linting Doctrine schema...');
+      execSync(`php bin/console doctrine:schema:validate --skip-sync`, getExecutorOptions(context));
+    }
   }
 
   console.info('Done Linting.');
