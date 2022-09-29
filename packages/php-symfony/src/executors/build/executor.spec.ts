@@ -96,7 +96,9 @@ describe('Build Executor', () => {
   });
 
   it('can build prod to outputPath', async () => {
-    const spyOnExists = jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
+    const spyOnExists = jest
+      .spyOn(fs, 'existsSync')
+      .mockImplementation((path) => path === '/root/apps/symfony/bin/console');
     const spyOnRemove = jest.spyOn(fs, 'rmSync').mockReturnValue();
     const spyOnMkdir = jest.spyOn(fs, 'mkdirSync').mockReturnValue('/root');
     const spyOnCopy = jest.spyOn(fs, 'cpSync').mockReturnValue();

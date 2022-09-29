@@ -44,6 +44,12 @@ Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
 
 Run `nx affected:test` to execute the unit tests affected by a change.
 
+### Running e2e tests
+
+Run `nx e2e my-app` to execute the e2e tests.
+
+Run `nx affected:e2e` to execute the e2e tests affected by a change.
+
 ## Maintainers
 
 [@jotwea](https://github.com/jotwea)

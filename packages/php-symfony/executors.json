@@ -6,6 +6,11 @@
       "schema": "./src/executors/build/schema.json",
       "description": "build executor"
     },
+    "e2e": {
+      "implementation": "./src/executors/e2e/executor",
+      "schema": "./src/executors/e2e/schema.json",
+      "description": "e2e executor"
+    },
     "test": {
       "implementation": "./src/executors/test/executor",
       "schema": "./src/executors/test/schema.json",
