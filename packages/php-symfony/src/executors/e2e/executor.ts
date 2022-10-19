@@ -1,13 +1,13 @@
 import { E2ETestExecutorSchema } from './schema';
 import { execSync } from 'child_process';
-import { composerInstall, getExecutorOptions } from '../utils/executor-utils';
+import { getCwd, composerInstall, getExecutorOptions } from '../utils/executor-utils';
 import { ExecutorContext } from '@nrwl/devkit';
 import { existsSync } from 'fs';
 
 export default async function runExecutor(options: E2ETestExecutorSchema, context: ExecutorContext) {
-  const e2eTestDir = `${context.cwd}/tests_e2e`;
+  const e2eTestDir = `${getCwd(context)}/tests_e2e`;
   if (!existsSync(e2eTestDir)) {
-    console.info('Skipped E2E Tests: Directory "/tests_e2e" does not exist.');
+    console.info(`Skipped E2E Tests: Directory "${e2eTestDir}" does not exist.`);
     return { success: true };
   }
 

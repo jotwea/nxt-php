@@ -121,7 +121,7 @@ describe('E2E Test Executor', () => {
     const spyOnExists = jest.spyOn(fs, 'existsSync').mockReturnValue(false);
     const output = await executor(options, context);
 
-    expect(spyOnExists).toHaveBeenCalledWith('/root/tests_e2e');
+    expect(spyOnExists).toHaveBeenCalledWith('/root/apps/symfony/tests_e2e');
     expect(cp.execSync).not.toHaveBeenCalled();
     expect(output.success).toBe(true);
   });

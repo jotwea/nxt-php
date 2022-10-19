@@ -1,6 +1,6 @@
 {
   "name": "@nxt-php/php-symfony",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "A third-party Nx plugin for PHP Symfony",
   "author": {
     "name": "Josef Wagner"
@@ -15,9 +15,9 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "dependencies": {
-    "@nrwl/devkit": "^14.0.0"
+    "@nrwl/devkit": "^15.0.0"
   },
   "peerDependencies": {
-    "@nrwl/workspace": "^14.0.0"
+    "@nrwl/workspace": "^15.0.0"
   }
 }
