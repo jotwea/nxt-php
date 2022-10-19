@@ -1,5 +1,4 @@
 {
-  "root": "e2e/php-symfony-e2e",
   "projectType": "application",
   "sourceRoot": "e2e/php-symfony-e2e/src",
   "targets": {

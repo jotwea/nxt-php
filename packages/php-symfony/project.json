@@ -11,7 +11,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/packages/php-symfony"],
+      "outputs": ["{workspaceRoot}/coverage/packages/php-symfony"],
       "options": {
         "jestConfig": "packages/php-symfony/jest.config.ts",
         "passWithNoTests": true
