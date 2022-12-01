@@ -1,6 +1,6 @@
 import { TestExecutorSchema } from './schema';
 import { execSync } from 'child_process';
-import { composerInstall, getExecutorOptions } from '../utils/executor-utils';
+import { getExecutorOptions } from '../utils/executor-utils';
 import { ExecutorContext } from '@nrwl/devkit';
 
 export default async function runExecutor(options: TestExecutorSchema, context: ExecutorContext) {
@@ -16,8 +16,6 @@ export default async function runExecutor(options: TestExecutorSchema, context: 
   if (context.isVerbose) {
     phpUnitParams = [...phpUnitParams, '--verbose'];
   }
-
-  composerInstall(context);
 
   console.info('Testing using phpunit...');
   execSync(

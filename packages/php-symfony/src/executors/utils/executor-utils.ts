@@ -22,17 +22,3 @@ export function getExecutorOptions(context: ExecutorContext): ExecSyncOptions {
   if (context.configurationName === 'production') env.APP_ENV = 'prod';
   return { cwd: getCwd(context), stdio: 'inherit', env };
 }
-
-export function composerInstall(context: ExecutorContext) {
-  const installParams = ['--prefer-dist', '--no-progress', '--no-interaction', '--optimize-autoloader', '--no-scripts'];
-  if (context.configurationName === 'production') {
-    installParams.push('--no-dev');
-  }
-  if (context.isVerbose) {
-    installParams.push('-vvv');
-  }
-
-  console.info('Installing using composer...');
-  execSync(`composer install ${installParams.join(' ')}`.trim(), getExecutorOptions(context));
-  console.info('Done installing using composer.');
-}

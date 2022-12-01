@@ -1,39 +1,60 @@
 import { BuildExecutorSchema } from './schema';
 import * as fs from 'fs';
-import { composerInstall, getCwd, getExecutorOptions } from '../utils/executor-utils';
+import { getExecutorOptions, getProjectPath } from '../utils/executor-utils';
 import { execSync } from 'child_process';
 import { ExecutorContext } from '@nrwl/devkit';
 import { existsSync } from 'fs';
 
 export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {
-  const executorContext = getExecutorOptions(context);
+  const destination = options.outputPath
+    ? `${context.cwd}/${options.outputPath}`
+    : `${context.cwd}/dist/${getProjectPath(context)}`;
+
+  console.info('Building ...');
+  prepare(destination, options.cleanDestinationDir);
+  copy(`${getExecutorOptions(context).cwd}`, destination);
+  build(context, destination);
+  console.info('Done building.');
+
+  return { success: true };
+}
+
+function prepare(destination: string, clean: boolean): void {
+  if (clean && fs.existsSync(destination)) {
+    console.info('Clean directory.');
+    fs.rmSync(destination, { recursive: true, force: true });
+  }
+
+  if (!fs.existsSync(destination)) {
+    fs.mkdirSync(destination, { recursive: true });
+  }
+}
+
+function copy(source: string, destination: string): void {
+  console.info(`Copy sources to "${destination}".`);
+  const exclude = [`${source}/tests`, `${source}/tests_e2e`, `${source}/var`, `${source}/vendor`];
+  const filter = (source: string) => !exclude.includes(source);
+  fs.cpSync(`${source}/`, `${destination}/`, { recursive: true, filter });
+}
+
+function build(context: ExecutorContext, destination: string): void {
+  const executorOptions = { ...getExecutorOptions(context), cwd: destination };
+  const installParams = ['--prefer-dist', '--no-progress', '--no-interaction', '--optimize-autoloader', '--no-scripts'];
+  if (context.configurationName === 'production') {
+    installParams.push('--no-dev');
+  }
+  if (context.isVerbose) {
+    installParams.push('-vvv');
+  }
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
   const assetParams = context.configurationName === 'production' ? '' : ' --relative';
 
-  console.info('Building ...');
-  composerInstall(context);
-  execSync(`composer dump-autoload -a -o${devParams}`, executorContext);
-  if (existsSync(`${getCwd(context)}/bin/console`)) {
-    execSync(`php bin/console assets:install${assetParams} public --no-interaction`, executorContext);
+  execSync(`composer install ${installParams.join(' ')}`.trim(), executorOptions);
+  execSync(`composer dump-autoload -a -o${devParams}`, executorOptions);
+  if (existsSync(`${destination}/bin/console`)) {
+    execSync(`php bin/console assets:install${assetParams} public --no-interaction`, executorOptions);
   }
-  console.info('Done building.');
-
-  if (options.outputPath) {
-    const dest = `${context.cwd}/${options.outputPath}`;
-
-    if (options.cleanDestinationDir && fs.existsSync(dest)) {
-      console.info(`Clean directory.`);
-      fs.rmSync(dest, { recursive: true, force: true });
-    }
-
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(dest, { recursive: true });
-    }
-
-    console.info(`Copying files to output path "${options.outputPath}"...`);
-    fs.cpSync(`${executorContext.cwd}/`, `${dest}/`, { recursive: true });
-    console.info(`Done copying files.`);
+  if (fs.existsSync(`${destination}/var/`)) {
+    fs.rmSync(`${destination}/var`, { recursive: true, force: true });
   }
-
-  return { success: true };
 }

@@ -1,6 +1,6 @@
 import { E2ETestExecutorSchema } from './schema';
 import { execSync } from 'child_process';
-import { getCwd, composerInstall, getExecutorOptions } from '../utils/executor-utils';
+import { getCwd, getExecutorOptions } from '../utils/executor-utils';
 import { ExecutorContext } from '@nrwl/devkit';
 import { existsSync } from 'fs';
 
@@ -23,8 +23,6 @@ export default async function runExecutor(options: E2ETestExecutorSchema, contex
   if (context.isVerbose) {
     phpUnitParams = [...phpUnitParams, '--verbose'];
   }
-
-  composerInstall(context);
 
   console.info('E2E Testing using phpunit...');
   execSync(

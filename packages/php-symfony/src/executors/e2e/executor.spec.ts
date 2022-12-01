@@ -50,10 +50,6 @@ describe('E2E Test Executor', () => {
   it('can test e2e', async () => {
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
-      expectedOptions
-    );
     expect(cp.execSync).toHaveBeenCalledWith(`php  vendor/bin/phpunit tests_e2e`, expectedOptions);
     expect(output.success).toBe(true);
   });
@@ -62,10 +58,6 @@ describe('E2E Test Executor', () => {
     options.codeCoverage = true;
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
-      expectedOptions
-    );
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit tests_e2e --coverage-text`,
       expectedOptions
@@ -78,10 +70,6 @@ describe('E2E Test Executor', () => {
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledWith(
-      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
-      expectedOptions
-    );
-    expect(cp.execSync).toHaveBeenCalledWith(
       `php  vendor/bin/phpunit tests_e2e --log-junit phpunit-report.xml`,
       expectedOptions
     );
@@ -92,10 +80,6 @@ describe('E2E Test Executor', () => {
     context.isVerbose = true;
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts -vvv`,
-      expectedOptions
-    );
     expect(cp.execSync).toHaveBeenCalledWith(`php  vendor/bin/phpunit tests_e2e --verbose`, expectedOptions);
     expect(output.success).toBe(true);
   });
@@ -106,10 +90,6 @@ describe('E2E Test Executor', () => {
     context.isVerbose = true;
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts -vvv`,
-      expectedOptions
-    );
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit tests_e2e --coverage-text --log-junit phpunit-report.xml --verbose`,
       expectedOptions

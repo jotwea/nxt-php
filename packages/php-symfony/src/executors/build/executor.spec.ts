@@ -16,8 +16,13 @@ jest.mock('child_process', () => ({
 import * as cp from 'child_process';
 
 const expectedEnv = { HOME: expect.any(String), PATH: expect.any(String), PHP_INI_DIR: expect.any(String) };
-const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
-const expectedProdOptions = { cwd: '/root/apps/symfony', env: { APP_ENV: 'prod', ...expectedEnv }, stdio: 'inherit' };
+const expectedOptions = { cwd: '/root/dist/apps/symfony', env: expectedEnv, stdio: 'inherit' };
+const expectedProdOptions = {
+  cwd: '/root/dist/apps/symfony',
+  env: { APP_ENV: 'prod', ...expectedEnv },
+  stdio: 'inherit',
+};
+const expectedCopyOptions = { recursive: true, filter: expect.any(Function) };
 
 let options: BuildExecutorSchema;
 let context: ExecutorContext;
@@ -49,6 +54,9 @@ describe('Build Executor', () => {
   });
 
   it('can build plain PHP', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/dist/apps/symfony');
+    jest.spyOn(fs, 'cpSync').mockReturnValue();
+
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
@@ -61,7 +69,13 @@ describe('Build Executor', () => {
   });
 
   it('can build dev', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
+    jest
+      .spyOn(fs, 'existsSync')
+      .mockImplementation(
+        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony'
+      );
+    jest.spyOn(fs, 'cpSync').mockReturnValue();
+
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
@@ -78,7 +92,13 @@ describe('Build Executor', () => {
   });
 
   it('can build prod', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
+    jest
+      .spyOn(fs, 'existsSync')
+      .mockImplementation(
+        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony'
+      );
+    jest.spyOn(fs, 'cpSync').mockReturnValue();
+
     context.configurationName = 'production';
     const output = await executor(options, context);
 
@@ -95,26 +115,44 @@ describe('Build Executor', () => {
     expect(output.success).toBe(true);
   });
 
-  it('can build prod to outputPath', async () => {
-    const spyOnExists = jest
+  it('can clean var after build', async () => {
+    jest
       .spyOn(fs, 'existsSync')
-      .mockImplementation((path) => path === '/root/apps/symfony/bin/console');
+      .mockImplementation((path) => path === '/root/dist/apps/var/' || path === '/root/dist/apps/symfony');
+    jest.spyOn(fs, 'cpSync').mockReturnValue();
+
+    context.configurationName = 'production';
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(2);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
+      expectedProdOptions
+    );
+    expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
+    expect(output.success).toBe(true);
+  });
+
+  it('can build prod to outputPath', async () => {
+    const spyOnExists = jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/out/bin/console');
     const spyOnRemove = jest.spyOn(fs, 'rmSync').mockReturnValue();
     const spyOnMkdir = jest.spyOn(fs, 'mkdirSync').mockReturnValue('/root');
     const spyOnCopy = jest.spyOn(fs, 'cpSync').mockReturnValue();
 
     context.configurationName = 'production';
-    options.outputPath = 'out/path';
-    const dist = '/root/out/path';
+    options.outputPath = 'out';
+    expectedProdOptions.cwd = '/root/out';
     const output = await executor(options, context);
 
     expect(spyOnRemove).not.toHaveBeenCalled();
-    expect(spyOnExists).toHaveBeenCalledTimes(2);
-    expect(spyOnExists).toHaveBeenCalledWith(dist);
+    expect(spyOnExists).toHaveBeenCalledTimes(3);
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out');
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out/bin/console');
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out/var/');
     expect(spyOnMkdir).toHaveBeenCalledTimes(1);
-    expect(spyOnMkdir).toHaveBeenCalledWith(dist, { recursive: true });
+    expect(spyOnMkdir).toHaveBeenCalledWith('/root/out', { recursive: true });
     expect(spyOnCopy).toHaveBeenCalledTimes(1);
-    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedOptions.cwd}/`, `${dist}/`, { recursive: true });
+    expect(spyOnCopy).toHaveBeenCalledWith('/root/apps/symfony/', '/root/out/', expectedCopyOptions);
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -131,20 +169,25 @@ describe('Build Executor', () => {
 
   it('can clean outputPath before building', async () => {
     const spyOnRemove = jest.spyOn(fs, 'rmSync').mockReturnValue();
-    const spyOnExists = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const spyOnCopy = jest.spyOn(fs, 'cpSync').mockReturnValue();
+    const spyOnExists = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
 
     context.configurationName = 'production';
-    options.outputPath = 'out/path';
+    options.outputPath = 'out';
     options.cleanDestinationDir = true;
-    const dist = '/root/out/path';
+    expectedProdOptions.cwd = '/root/out';
     const output = await executor(options, context);
 
-    expect(spyOnRemove).toHaveBeenCalledTimes(1);
-    expect(spyOnRemove).toHaveBeenCalledWith(dist, { recursive: true, force: true });
-    expect(spyOnExists).toHaveBeenCalledTimes(3);
+    expect(spyOnExists).toHaveBeenCalledTimes(4);
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out');
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out/bin/console');
+    expect(spyOnExists).toHaveBeenCalledWith('/root/out/var/');
+
+    expect(spyOnRemove).toHaveBeenCalledTimes(2);
+    expect(spyOnRemove).toHaveBeenCalledWith('/root/out', { recursive: true, force: true });
+    expect(spyOnRemove).toHaveBeenCalledWith('/root/out/var', { recursive: true, force: true });
     expect(spyOnCopy).toHaveBeenCalledTimes(1);
-    expect(spyOnCopy).toHaveBeenCalledWith(`${expectedOptions.cwd}/`, `${dist}/`, { recursive: true });
+    expect(spyOnCopy).toHaveBeenCalledWith('/root/apps/symfony/', '/root/out/', expectedCopyOptions);
     expect(output.success).toBe(true);
   });
 });
