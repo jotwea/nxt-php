@@ -32,7 +32,20 @@ function prepare(destination: string, clean: boolean): void {
 
 function copy(source: string, destination: string): void {
   console.info(`Copy sources to "${destination}".`);
-  const exclude = [`${source}/tests`, `${source}/tests_e2e`, `${source}/var`, `${source}/vendor`];
+  const exclude = [
+    '.gitignore',
+    '.idea',
+    '.vscode',
+    '.env.local',
+    '.env.test.local',
+    '.phpunit.result.cache',
+    'phpunit.xml.dist',
+    'project.json',
+    'tests',
+    'tests_e2e',
+    'var',
+    'vendor',
+  ].map((p) => `${source}/${p}`);
   const filter = (source: string) => !exclude.includes(source);
   fs.cpSync(`${source}/`, `${destination}/`, { recursive: true, filter });
 }
