@@ -62,7 +62,7 @@ function build(context: ExecutorContext, destination: string): void {
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
   const assetParams = context.configurationName === 'production' ? '' : ' --relative';
 
-  execSync(`composer install ${installParams.join(' ')}`.trim(), executorOptions);
+  execSync(`COMPOSER_MIRROR_PATH_REPOS=1 composer install ${installParams.join(' ')}`.trim(), executorOptions);
   execSync(`composer dump-autoload -a -o${devParams}`, executorOptions);
   if (existsSync(`${destination}/bin/console`)) {
     execSync(`php bin/console assets:install${assetParams} public --no-interaction`, executorOptions);
