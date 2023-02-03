@@ -11,7 +11,7 @@ export default async function runExecutor(options: TestExecutorSchema, context: 
     phpUnitParams = [...phpUnitParams, '--coverage-text'];
   }
   if (options.ci) {
-    phpUnitParams = [...phpUnitParams, '--log-junit phpunit-report.xml', '--coverage-cobertura coverage.cobertura.xml'];
+    phpUnitParams = [...phpUnitParams, '--log-junit phpunit-report.xml', '--coverage-cobertura cobertura-coverage.xml'];
   }
   if (context.isVerbose) {
     phpUnitParams = [...phpUnitParams, '--verbose'];
