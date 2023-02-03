@@ -17,7 +17,7 @@ describe('php-symfony generator', () => {
   const options: PhpSymfonyGeneratorSchema = { name: 'test' };
 
   beforeEach(() => {
-    appTree = createTreeWithEmptyWorkspace();
+    appTree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
   });
   afterEach(() => {
     jest.clearAllMocks();

@@ -17,8 +17,8 @@ An [Nx plugin](https://nx.dev) for developing applications and libraries using [
 In order to use this plugin within your NX workspace, you need to do some manual steps which cannot be done by the plugin:
 
 - Install PHP 8.0.2 or higher and your required [PHP extensions](https://symfony.com/doc/current/setup.html#technical-requirements)
-- [Install Composer](https://getcomposer.org/download/), which is used to install PHP packages.
-- Install the PCOV extension used for code coverage during test execution
+- Install [Composer](https://getcomposer.org/download/), which is used to install PHP packages.
+- Install [PCOV extension](https://github.com/krakjoe/pcov/blob/develop/INSTALL.md) used for code coverage during test execution
 
 ## Usage
 
