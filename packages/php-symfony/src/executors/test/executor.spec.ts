@@ -67,7 +67,10 @@ describe('Test Executor', () => {
     options.ci = true;
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledWith(`php  vendor/bin/phpunit --log-junit phpunit-report.xml`, expectedOptions);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `php  vendor/bin/phpunit --log-junit phpunit-report.xml --coverage-cobertura coverage.cobertura.xml`,
+      expectedOptions
+    );
     expect(output.success).toBe(true);
   });
 
@@ -86,7 +89,7 @@ describe('Test Executor', () => {
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledWith(
-      `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit --coverage-text --log-junit phpunit-report.xml --verbose`,
+      `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit --coverage-text --log-junit phpunit-report.xml --coverage-cobertura coverage.cobertura.xml --verbose`,
       expectedOptions
     );
     expect(output.success).toBe(true);
