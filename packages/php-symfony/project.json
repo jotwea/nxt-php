@@ -1,4 +1,6 @@
 {
+  "name": "php-symfony",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/php-symfony/src",
   "projectType": "library",
   "targets": {

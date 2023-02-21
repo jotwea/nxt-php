@@ -1,7 +1,0 @@
-{
-  "version": 2,
-  "projects": {
-    "php-symfony": "packages/php-symfony",
-    "php-symfony-e2e": "e2e/php-symfony-e2e"
-  }
-}
