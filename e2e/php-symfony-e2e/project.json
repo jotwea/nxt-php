@@ -5,11 +5,12 @@
   "sourceRoot": "e2e/php-symfony-e2e/src",
   "targets": {
     "e2e": {
-      "executor": "@nrwl/nx-plugin:e2e",
+      "executor": "@nx/jest:jest",
       "options": {
-        "target": "php-symfony:build",
-        "jestConfig": "e2e/php-symfony-e2e/jest.config.js"
-      }
+        "jestConfig": "e2e/php-symfony-e2e/jest.config.js",
+        "runInBand": true
+      },
+      "dependsOn": ["php-symfony:build"]
     }
   },
   "tags": [],

@@ -1,7 +1,7 @@
 import { TestExecutorSchema } from './schema';
 import { execSync } from 'child_process';
 import { getExecutorOptions } from '../utils/executor-utils';
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 
 export default async function runExecutor(options: TestExecutorSchema, context: ExecutorContext) {
   let phpParams = [];

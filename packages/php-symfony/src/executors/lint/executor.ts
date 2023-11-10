@@ -2,7 +2,7 @@ import { LintExecutorSchema } from './schema';
 import { getCwd, getExecutorOptions } from '../utils/executor-utils';
 import { execSync } from 'child_process';
 import { existsSync, readdirSync } from 'fs';
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 
 export default async function runExecutor(options: LintExecutorSchema, context: ExecutorContext) {
   const cwd = getCwd(context);

@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import { LintExecutorSchema } from './schema';
 import executor from './executor';
 
@@ -47,7 +47,6 @@ describe('Lint Executor', () => {
             sourceRoot: 'apps/symfony',
           },
         },
-        npmScope: 'test',
       },
       isVerbose: false,
     };

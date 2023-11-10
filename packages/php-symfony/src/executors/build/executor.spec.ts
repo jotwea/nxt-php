@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import * as fs from 'fs';
 import { BuildExecutorSchema } from './schema';
 import executor from './executor';
@@ -42,7 +42,6 @@ beforeEach(() => {
           sourceRoot: 'apps/symfony',
         },
       },
-      npmScope: 'test',
     },
     isVerbose: false,
   };

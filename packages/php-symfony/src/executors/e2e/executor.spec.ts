@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import { E2ETestExecutorSchema } from './schema';
 import executor from './executor';
 
@@ -37,7 +37,6 @@ describe('E2E Test Executor', () => {
             sourceRoot: 'apps/symfony',
           },
         },
-        npmScope: 'test',
       },
       isVerbose: false,
     };

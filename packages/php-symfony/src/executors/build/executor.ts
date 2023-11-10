@@ -2,7 +2,7 @@ import { BuildExecutorSchema } from './schema';
 import * as fs from 'fs';
 import { getExecutorOptions, getProjectPath } from '../utils/executor-utils';
 import { execSync } from 'child_process';
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import { existsSync } from 'fs';
 
 export default async function runExecutor(options: BuildExecutorSchema, context: ExecutorContext) {

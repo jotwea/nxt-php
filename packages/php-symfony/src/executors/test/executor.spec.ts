@@ -1,4 +1,4 @@
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import { TestExecutorSchema } from './schema';
 import executor from './executor';
 
@@ -35,7 +35,6 @@ describe('Test Executor', () => {
             sourceRoot: 'apps/symfony',
           },
         },
-        npmScope: 'test',
       },
       isVerbose: false,
     };

@@ -1,7 +1,7 @@
 import { E2ETestExecutorSchema } from './schema';
 import { execSync } from 'child_process';
 import { getCwd, getExecutorOptions } from '../utils/executor-utils';
-import { ExecutorContext } from '@nrwl/devkit';
+import { ExecutorContext } from '@nx/devkit';
 import { existsSync } from 'fs';
 
 export default async function runExecutor(options: E2ETestExecutorSchema, context: ExecutorContext) {
