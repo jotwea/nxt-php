@@ -60,7 +60,7 @@ describe('Build Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
+      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --quiet`,
       expectedOptions
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
@@ -79,7 +79,7 @@ describe('Build Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts`,
+      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --quiet`,
       expectedOptions
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
@@ -103,7 +103,7 @@ describe('Build Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
+      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
       expectedProdOptions
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
@@ -125,7 +125,7 @@ describe('Build Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
+      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
       expectedProdOptions
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
@@ -155,7 +155,7 @@ describe('Build Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
-      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev`,
+      `COMPOSER_MIRROR_PATH_REPOS=1 composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
       expectedProdOptions
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);

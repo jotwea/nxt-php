@@ -58,6 +58,8 @@ function build(context: ExecutorContext, destination: string): void {
   }
   if (context.isVerbose) {
     installParams.push('-vvv');
+  } else {
+    installParams.push('--quiet');
   }
   const devParams = context.configurationName === 'production' ? ' --no-dev' : '';
   const assetParams = context.configurationName === 'production' ? '' : ' --relative';
