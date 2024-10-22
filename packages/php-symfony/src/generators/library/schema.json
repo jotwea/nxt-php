@@ -24,7 +24,5 @@
       "alias": "d"
     }
   },
-  "required": [
-    "name"
-  ]
+  "required": ["name"]
 }

@@ -29,7 +29,8 @@ describe('E2E Test Executor', () => {
       cwd: '/root',
       projectName: 'my-app',
       targetName: 'build',
-      workspace: {
+      nxJsonConfiguration: {},
+      projectsConfigurations: {
         version: 2,
         projects: {
           'my-app': <any>{
@@ -38,6 +39,7 @@ describe('E2E Test Executor', () => {
           },
         },
       },
+      projectGraph: { nodes: {}, dependencies: {} },
       isVerbose: false,
     };
   });

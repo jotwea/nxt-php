@@ -39,7 +39,8 @@ describe('Lint Executor', () => {
       cwd: '/root',
       projectName: 'my-app',
       targetName: 'build',
-      workspace: {
+      nxJsonConfiguration: {},
+      projectsConfigurations: {
         version: 2,
         projects: {
           'my-app': <any>{
@@ -48,6 +49,7 @@ describe('Lint Executor', () => {
           },
         },
       },
+      projectGraph: { nodes: {}, dependencies: {} },
       isVerbose: false,
     };
   });

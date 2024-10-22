@@ -2,7 +2,7 @@ import { execSync, ExecSyncOptions } from 'child_process';
 import { ExecutorContext } from '@nx/devkit';
 
 export function getProjectPath(context: ExecutorContext): string {
-  return context.workspace.projects[context.projectName].root;
+  return context.projectsConfigurations.projects[context.projectName].root;
 }
 
 export function getCwd(context: ExecutorContext): string {
