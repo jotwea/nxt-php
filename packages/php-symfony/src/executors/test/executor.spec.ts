@@ -53,6 +53,14 @@ describe('Test Executor', () => {
     expect(output.success).toBe(true);
   });
 
+  it('can test in parallel', async () => {
+    options.processes = 32;
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledWith(`php  vendor/bin/paratest -p32`, expectedOptions);
+    expect(output.success).toBe(true);
+  });
+
   it('can test with codeCoverage flag', async () => {
     options.codeCoverage = true;
     const output = await executor(options, context);
@@ -91,6 +99,20 @@ describe('Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
+      expectedOptions
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can test with all flags in parallel', async () => {
+    options.processes = 64;
+    options.codeCoverage = true;
+    options.ci = true;
+    context.isVerbose = true;
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/paratest -p64 --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
       expectedOptions
     );
     expect(output.success).toBe(true);

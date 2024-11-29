@@ -17,9 +17,10 @@ export default async function runExecutor(options: TestExecutorSchema, context: 
     phpUnitParams = [...phpUnitParams, '--verbose'];
   }
 
-  console.info('Testing using phpunit...');
+  const executor = options.processes > 1 ? `paratest -p${options.processes}` : 'phpunit';
+  console.info(`Testing using ${executor}...`);
   execSync(
-    `php ${phpParams.join(' ')} vendor/bin/phpunit ${phpUnitParams.join(' ')}`.trim(),
+    `php ${phpParams.join(' ')} vendor/bin/${executor} ${phpUnitParams.join(' ')}`.trim(),
     getExecutorOptions(context)
   );
   console.info('Done testing.');
