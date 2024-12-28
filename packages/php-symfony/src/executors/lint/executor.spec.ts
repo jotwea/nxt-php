@@ -25,7 +25,13 @@ jest.mock('fs', () => ({
 import * as fs from 'fs';
 
 describe('Lint Executor', () => {
-  const expectedEnv = { HOME: expect.any(String), PATH: expect.any(String), PHP_INI_DIR: expect.any(String) };
+  const expectedEnv = {
+    HOME: expect.any(String),
+    PATH: expect.any(String),
+    PHP_INI_DIR: expect.any(String),
+    COMPOSER_HOME: expect.any(String),
+    APPDATA: expect.any(String),
+  };
   const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
   const expectedPaths = ['config', 'src'];
 

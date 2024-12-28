@@ -14,7 +14,13 @@ jest.mock('child_process', () => ({
 import * as cp from 'child_process';
 
 describe('Test Executor', () => {
-  const expectedEnv = { HOME: expect.any(String), PATH: expect.any(String), PHP_INI_DIR: expect.any(String) };
+  const expectedEnv = {
+    HOME: expect.any(String),
+    PATH: expect.any(String),
+    PHP_INI_DIR: expect.any(String),
+    COMPOSER_HOME: expect.any(String),
+    APPDATA: expect.any(String),
+  };
   const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
 
   let options: TestExecutorSchema;
