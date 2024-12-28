@@ -1,4 +1,4 @@
-import { execSync, ExecSyncOptions } from 'child_process';
+import { ExecSyncOptions } from 'child_process';
 import { ExecutorContext } from '@nx/devkit';
 
 export function getProjectPath(context: ExecutorContext): string {
@@ -14,6 +14,8 @@ export function getEnv(): NodeJS.ProcessEnv {
     PHP_INI_DIR: process.env.PHP_INI_DIR || '',
     HOME: process.env.HOME || '',
     PATH: process.env.PATH || '',
+    COMPOSER_HOME: process.env.COMPOSER_HOME || '',
+    APPDATA: process.env.APPDATA || '',
   };
 }
 
