@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'php-symfony',
   preset: '../../jest.preset.js',

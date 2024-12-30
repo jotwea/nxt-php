@@ -5,10 +5,10 @@ import executor from './executor';
 // mock exec of child_process
 jest.mock('child_process', () => ({
   exec: jest.fn((command, options, callback) => {
-    callback && callback(null, { stdout: '' });
+    if (callback) callback(null, { stdout: '' });
   }),
   execSync: jest.fn((command, options, callback) => {
-    callback && callback(null, { stdout: '' });
+    if (callback) callback(null, { stdout: '' });
   }),
 }));
 import * as cp from 'child_process';
@@ -37,7 +37,7 @@ describe('Test Executor', () => {
       projectsConfigurations: {
         version: 2,
         projects: {
-          'my-app': <any>{
+          'my-app': {
             root: 'apps/symfony',
             sourceRoot: 'apps/symfony',
           },

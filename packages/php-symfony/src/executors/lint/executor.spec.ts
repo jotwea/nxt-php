@@ -5,22 +5,22 @@ import executor from './executor';
 // mock exec of child_process
 jest.mock('child_process', () => ({
   exec: jest.fn((command, options, callback) => {
-    callback && callback(null, { stdout: '' });
+    if (callback) callback(null, { stdout: '' });
   }),
   execSync: jest.fn((command, options, callback) => {
-    callback && callback(null, { stdout: '' });
+    if (callback) callback(null, { stdout: '' });
   }),
 }));
 import * as cp from 'child_process';
 
 jest.mock('fs', () => ({
-  readdirSync: jest.fn((path, options) => [
+  readdirSync: jest.fn(() => [
     { name: 'project.json', isDirectory: () => false },
     { name: 'config', isDirectory: () => true },
     { name: 'src', isDirectory: () => true },
     { name: 'vendor', isDirectory: () => true },
   ]),
-  existsSync: jest.fn((path) => false),
+  existsSync: jest.fn(() => false),
 }));
 import * as fs from 'fs';
 
@@ -33,7 +33,6 @@ describe('Lint Executor', () => {
     APPDATA: expect.any(String),
   };
   const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
-  const expectedPaths = ['config', 'src'];
 
   let options: LintExecutorSchema;
   let context: ExecutorContext;
@@ -49,7 +48,7 @@ describe('Lint Executor', () => {
       projectsConfigurations: {
         version: 2,
         projects: {
-          'my-app': <any>{
+          'my-app': {
             root: 'apps/symfony',
             sourceRoot: 'apps/symfony',
           },
