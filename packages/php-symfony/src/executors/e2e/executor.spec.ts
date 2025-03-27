@@ -67,7 +67,7 @@ describe('E2E Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit tests_e2e --coverage-text`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -78,7 +78,7 @@ describe('E2E Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php  vendor/bin/phpunit tests_e2e --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -99,7 +99,7 @@ describe('E2E Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit tests_e2e --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });

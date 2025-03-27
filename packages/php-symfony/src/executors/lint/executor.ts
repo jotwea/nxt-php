@@ -20,7 +20,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
     console.info('Linting PHP...');
     execSync(
       `php vendor/bin/parallel-lint --colors ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
-      getExecutorOptions(context)
+      getExecutorOptions(context),
     );
   }
 
@@ -32,7 +32,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
       console.info('Linting YAML...');
       execSync(
         `php bin/console lint:yaml --parse-tags ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
-        getExecutorOptions(context)
+        getExecutorOptions(context),
       );
     }
 
@@ -40,7 +40,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
       console.info('Linting Twig...');
       execSync(
         `php bin/console lint:twig --show-deprecations ${relevantDirectories.join(' ')} ${lintParams.join(' ')}`.trim(),
-        getExecutorOptions(context)
+        getExecutorOptions(context),
       );
     }
 

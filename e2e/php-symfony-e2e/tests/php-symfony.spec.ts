@@ -18,11 +18,11 @@ describe('php-symfony e2e', () => {
           `${projectName}/symfony.lock`,
           `${projectName}/vendor`,
           `${projectName}/bin/console`,
-          `${projectName}/bin/phpunit`
-        )
+          `${projectName}/bin/phpunit`,
+        ),
       ).not.toThrow();
     },
-    timeout
+    timeout,
   );
 
   it(
@@ -40,11 +40,11 @@ describe('php-symfony e2e', () => {
           `${projectName}/symfony.lock`,
           `${projectName}/vendor`,
           `${projectName}/bin/console`,
-          `${projectName}/bin/phpunit`
-        )
+          `${projectName}/bin/phpunit`,
+        ),
       ).not.toThrow();
     },
-    timeout
+    timeout,
   );
 
   describe('--directory', () => {
@@ -56,7 +56,7 @@ describe('php-symfony e2e', () => {
         await runNxCommandAsync(`generate @nxt-php/php-symfony:library ${projectName} --directory subdir`);
         expect(() => checkFilesExist(`subdir/${projectName}/src/index.ts`)).not.toThrow();
       },
-      timeout
+      timeout,
     );
   });
 
@@ -70,7 +70,7 @@ describe('php-symfony e2e', () => {
         const project = readJson(`${projectName}/project.json`);
         expect(project.tags).toEqual(['e2etag', 'e2ePackage']);
       },
-      timeout
+      timeout,
     );
   });
 });

@@ -48,6 +48,6 @@
     }
   },
   "useInferencePlugins": false,
-  "defaultBase": "main",
+  "defaultBase": "origin/master",
   "neverConnectToCloud": true
 }

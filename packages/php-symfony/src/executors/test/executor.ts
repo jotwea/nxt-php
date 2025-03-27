@@ -21,7 +21,7 @@ export default async function runExecutor(options: TestExecutorSchema, context: 
   console.info(`Testing using ${executor}...`);
   execSync(
     `php ${phpParams.join(' ')} vendor/bin/${executor} ${phpUnitParams.join(' ')}`.trim(),
-    getExecutorOptions(context)
+    getExecutorOptions(context),
   );
   console.info('Done testing.');
 

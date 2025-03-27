@@ -30,18 +30,18 @@ describe('php-symfony generator', () => {
     expect(cp.exec).toHaveBeenCalledWith(
       `composer create-project symfony/skeleton apps/test`,
       {},
-      expect.any(Function)
+      expect.any(Function),
     );
     expect(cp.exec).toHaveBeenCalledWith(`composer require webapp`, { cwd: 'apps/test' }, expect.any(Function));
     expect(cp.exec).toHaveBeenCalledWith(
       `composer require --dev symfony/test-pack`,
       { cwd: 'apps/test' },
-      expect.any(Function)
+      expect.any(Function),
     );
     expect(cp.exec).toHaveBeenCalledWith(
       `composer require --dev php-parallel-lint/php-parallel-lint php-parallel-lint/php-console-highlighter`,
       { cwd: 'apps/test' },
-      expect.any(Function)
+      expect.any(Function),
     );
 
     const config = readProjectConfiguration(appTree, 'test');

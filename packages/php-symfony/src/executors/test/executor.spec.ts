@@ -73,7 +73,7 @@ describe('Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit --coverage-text`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -84,7 +84,7 @@ describe('Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php  vendor/bin/phpunit --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -105,7 +105,7 @@ describe('Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -119,7 +119,7 @@ describe('Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/paratest -p64 --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });

@@ -81,7 +81,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
   await promisify(exec)(`composer require --dev symfony/test-pack`, { cwd: normalizedOptions.projectRoot });
   await promisify(exec)(
     `composer require --dev php-parallel-lint/php-parallel-lint php-parallel-lint/php-console-highlighter`,
-    { cwd: normalizedOptions.projectRoot }
+    { cwd: normalizedOptions.projectRoot },
   );
 
   addFiles(tree, normalizedOptions);

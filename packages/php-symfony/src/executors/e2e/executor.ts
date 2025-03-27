@@ -27,7 +27,7 @@ export default async function runExecutor(options: E2ETestExecutorSchema, contex
   console.info('E2E Testing using phpunit...');
   execSync(
     `php ${phpParams.join(' ')} vendor/bin/phpunit tests_e2e ${phpUnitParams.join(' ')}`.trim(),
-    getExecutorOptions(context)
+    getExecutorOptions(context),
   );
   console.info('Done E2E testing.');
 

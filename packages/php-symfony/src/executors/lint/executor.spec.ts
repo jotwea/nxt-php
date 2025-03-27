@@ -83,7 +83,7 @@ describe('Lint Executor', () => {
     jest
       .spyOn(fs, 'existsSync')
       .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/bin/parallel-lint'
+        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/bin/parallel-lint',
       );
     const output = await executor(options, context);
 
@@ -97,7 +97,7 @@ describe('Lint Executor', () => {
     jest
       .spyOn(fs, 'existsSync')
       .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/twig-bundle'
+        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/twig-bundle',
       );
     const output = await executor(options, context);
 
@@ -105,7 +105,7 @@ describe('Lint Executor', () => {
     expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
       `php bin/console lint:twig --show-deprecations config src`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -114,7 +114,7 @@ describe('Lint Executor', () => {
     jest
       .spyOn(fs, 'existsSync')
       .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/yaml'
+        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/yaml',
       );
     const output = await executor(options, context);
 
@@ -129,7 +129,7 @@ describe('Lint Executor', () => {
       .spyOn(fs, 'existsSync')
       .mockImplementation(
         (path) =>
-          path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/doctrine/doctrine-bundle'
+          path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/doctrine/doctrine-bundle',
       );
     const output = await executor(options, context);
 

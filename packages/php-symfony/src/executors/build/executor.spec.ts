@@ -69,7 +69,7 @@ describe('Build Executor', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2);
     expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --quiet`,
-      { ...expectedOptions, env: { ...expectedOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } }
+      { ...expectedOptions, env: { ...expectedOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } },
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
     expect(output.success).toBe(true);
@@ -79,7 +79,7 @@ describe('Build Executor', () => {
     jest
       .spyOn(fs, 'existsSync')
       .mockImplementation(
-        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony'
+        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony',
       );
     jest.spyOn(fs, 'cpSync').mockReturnValue();
 
@@ -88,12 +88,12 @@ describe('Build Executor', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --quiet`,
-      { ...expectedOptions, env: { ...expectedOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } }
+      { ...expectedOptions, env: { ...expectedOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } },
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o`, expectedOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
       `php bin/console assets:install --relative public --no-interaction`,
-      expectedOptions
+      expectedOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -102,7 +102,7 @@ describe('Build Executor', () => {
     jest
       .spyOn(fs, 'existsSync')
       .mockImplementation(
-        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony'
+        (path) => path === '/root/dist/apps/symfony/bin/console' || path === '/root/dist/apps/symfony',
       );
     jest.spyOn(fs, 'cpSync').mockReturnValue();
 
@@ -112,12 +112,12 @@ describe('Build Executor', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
-      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } }
+      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } },
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
       `php bin/console assets:install public --no-interaction`,
-      expectedProdOptions
+      expectedProdOptions,
     );
     expect(output.success).toBe(true);
   });
@@ -134,7 +134,7 @@ describe('Build Executor', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2);
     expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
-      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } }
+      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } },
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
     expect(output.success).toBe(true);
@@ -164,12 +164,12 @@ describe('Build Executor', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(3);
     expect(cp.execSync).toHaveBeenCalledWith(
       `composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts --no-dev --quiet`,
-      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } }
+      { ...expectedProdOptions, env: { ...expectedProdOptions.env, COMPOSER_MIRROR_PATH_REPOS: '1' } },
     );
     expect(cp.execSync).toHaveBeenCalledWith(`composer dump-autoload -a -o --no-dev`, expectedProdOptions);
     expect(cp.execSync).toHaveBeenCalledWith(
       `php bin/console assets:install public --no-interaction`,
-      expectedProdOptions
+      expectedProdOptions,
     );
     expect(output.success).toBe(true);
   });
