@@ -1,1 +1,6 @@
-export interface LintExecutorSchema {} // eslint-disable-line
+export interface LintExecutorSchema {
+  format?: string;
+  outputFile?: string;
+  fix?: boolean;
+  ignoreEnv?: boolean;
+}

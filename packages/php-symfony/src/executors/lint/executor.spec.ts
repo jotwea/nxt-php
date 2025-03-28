@@ -139,11 +139,87 @@ describe('Lint Executor', () => {
     expect(output.success).toBe(true);
   });
 
+  it('can lint [PHP-CS-Fixer] with default options', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --dry-run',
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can lint [PHP-CS-Fixer] and ignore env', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
+    options.fix = true;
+    options.ignoreEnv = true;
+    const expectedOptions = {
+      cwd: '/root/apps/symfony',
+      env: { ...expectedEnv, PHP_CS_FIXER_IGNORE_ENV: expect.any(String) },
+      stdio: 'inherit',
+    };
+
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no',
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can lint [PHP-CS-Fixer] with all options', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
+    options.format = 'gitlab';
+    options.outputFile = 'gl-code-quality-report.json';
+    options.fix = true;
+
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no format=gitlab > gl-code-quality-report.json',
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can lint [PHPStan] with default options', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/phpstan');
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress',
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can lint [PHPStan] with all options', async () => {
+    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/phpstan');
+    options.format = 'gitlab';
+    options.outputFile = 'gl-code-quality-report.json';
+    options.fix = true;
+
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1);
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress error-format=gitlab > gl-code-quality-report.json',
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
   it('can lint all components', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledTimes(5);
+    expect(cp.execSync).toHaveBeenCalledTimes(7);
     expect(output.success).toBe(true);
   });
 });
