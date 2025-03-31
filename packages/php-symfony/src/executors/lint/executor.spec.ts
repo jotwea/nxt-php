@@ -174,14 +174,14 @@ describe('Lint Executor', () => {
   it('can lint [PHP-CS-Fixer] with all options', async () => {
     jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
     options.format = 'gitlab';
-    options.outputFile = 'gl-code-quality-report.json';
+    options.outputFile = 'gl.json';
     options.fix = true;
 
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
     expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no format=gitlab > gl-code-quality-report.json',
+      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --format=gitlab > gl-cs-fixer.json 2>/dev/null || true',
       expectedOptions,
     );
     expect(output.success).toBe(true);
@@ -193,7 +193,7 @@ describe('Lint Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
     expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress',
+      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress',
       expectedOptions,
     );
     expect(output.success).toBe(true);
@@ -202,14 +202,14 @@ describe('Lint Executor', () => {
   it('can lint [PHPStan] with all options', async () => {
     jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/phpstan');
     options.format = 'gitlab';
-    options.outputFile = 'gl-code-quality-report.json';
+    options.outputFile = 'gl.json';
     options.fix = true;
 
     const output = await executor(options, context);
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
     expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress error-format=gitlab > gl-code-quality-report.json',
+      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=gitlab > gl-phpstan.json 2>/dev/null || true',
       expectedOptions,
     );
     expect(output.success).toBe(true);

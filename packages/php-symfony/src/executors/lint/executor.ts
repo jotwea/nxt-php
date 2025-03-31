@@ -6,7 +6,7 @@ import { ExecutorContext } from '@nx/devkit';
 
 export default async function runExecutor(options: LintExecutorSchema, context: ExecutorContext) {
   const cwd = getCwd(context);
-  const commonParams = context.isVerbose ? '--verbose' : '';
+  const commonParams = context.isVerbose ? '-vvv' : '';
 
   const relevantDirectories = readdirSync(cwd, { withFileTypes: true })
     .filter((dir) => dir.isDirectory())
@@ -16,7 +16,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
   if (existsSync(`${cwd}/vendor/bin/parallel-lint`)) {
     console.info('Linting PHP...');
     execSync(
-      `php vendor/bin/parallel-lint --colors ${relevantDirectories.join(' ')} ${commonParams}`.trim(),
+      `php vendor/bin/parallel-lint --colors ${relevantDirectories.join(' ')}`.trim(),
       getExecutorOptions(context),
     );
   }
@@ -28,15 +28,21 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
     if (options.ignoreEnv) {
       executorOptions.env.PHP_CS_FIXER_IGNORE_ENV = '1';
     }
-    let lintParams = options.format ? ` format=${options.format}` : '';
-    if (!options.fix) {
-      lintParams += ' --dry-run';
+    let lintParams = options.fix ? '' : ' --dry-run';
+    if (options.format) {
+      lintParams += ` --format=${options.format}`;
     }
-    lintParams += commonParams;
-    if (options.outputFile) {
-      lintParams += ` > ${options.outputFile}`;
+    if (commonParams){
+      lintParams += ' ' + commonParams;
     }
 
+    if (options.outputFile) {
+      // in case of a given outputFile the results will be written to the file and errors will be ignored
+      const fileParts = options.outputFile.split('.');
+      const fileEnding = fileParts.pop();
+      const pathToOutputFile = fileParts.join('.') + '-cs-fixer.' + fileEnding;
+      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null || true';
+    }
     execSync(
       `php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no${lintParams}`.trim(),
       executorOptions,
@@ -46,13 +52,21 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
   if (existsSync(`${cwd}/vendor/bin/phpstan`)) {
     console.info('Linting using PHPStan...');
 
-    let lintParams = options.format ? `error-format=${options.format}` : '';
-    lintParams += commonParams;
-    if (options.outputFile) {
-      lintParams += ` > ${options.outputFile}`;
+    let lintParams = options.format ? ` --error-format=${options.format}` : '';
+    if (commonParams){
+      lintParams += ' ' + commonParams;
     }
+
+    if (options.outputFile) {
+      // in case of a given outputFile the results will be written to the file and errors will be ignored
+      const fileParts = options.outputFile.split('.');
+      const fileEnding = fileParts.pop();
+      const pathToOutputFile = fileParts.join('.') + '-phpstan.' + fileEnding;
+      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null || true';
+    }
+
     execSync(
-      `php vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress ${lintParams}`.trim(),
+      `php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress${lintParams}`.trim(),
       getExecutorOptions(context),
     );
   }
