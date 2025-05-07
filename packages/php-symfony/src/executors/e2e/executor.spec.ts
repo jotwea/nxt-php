@@ -61,6 +61,14 @@ describe('E2E Test Executor', () => {
     expect(output.success).toBe(true);
   });
 
+  it('can test in parallel', async () => {
+    options.processes = 4;
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledWith(`php  vendor/bin/paratest -p4 tests_e2e`, expectedOptions);
+    expect(output.success).toBe(true);
+  });
+
   it('can test e2e with codeCoverage flag', async () => {
     options.codeCoverage = true;
     const output = await executor(options, context);
@@ -99,6 +107,20 @@ describe('E2E Test Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledWith(
       `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/phpunit tests_e2e --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
+      expectedOptions,
+    );
+    expect(output.success).toBe(true);
+  });
+
+  it('can test e2e with all flags in parallel', async () => {
+    options.processes = 4;
+    options.codeCoverage = true;
+    options.ci = true;
+    context.isVerbose = true;
+    const output = await executor(options, context);
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `php -dpcov.enabled=1 -dpcov.directory="src" -dpcov.exclude="~vendor~" vendor/bin/paratest -p4 tests_e2e --coverage-text --log-junit phpunit-report.xml --coverage-cobertura cobertura-coverage.xml --verbose`,
       expectedOptions,
     );
     expect(output.success).toBe(true);

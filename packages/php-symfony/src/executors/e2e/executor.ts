@@ -24,9 +24,10 @@ export default async function runExecutor(options: E2ETestExecutorSchema, contex
     phpUnitParams = [...phpUnitParams, '--verbose'];
   }
 
-  console.info('E2E Testing using phpunit...');
+  const executor = options.processes > 1 ? `paratest -p${options.processes}` : 'phpunit';
+  console.info(`E2E Testing using ${executor}...`);
   execSync(
-    `php ${phpParams.join(' ')} vendor/bin/phpunit tests_e2e ${phpUnitParams.join(' ')}`.trim(),
+    `php ${phpParams.join(' ')} vendor/bin/${executor} tests_e2e ${phpUnitParams.join(' ')}`.trim(),
     getExecutorOptions(context),
   );
   console.info('Done E2E testing.');
