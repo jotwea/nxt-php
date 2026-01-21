@@ -70,7 +70,10 @@ function build(context: ExecutorContext, destination: string): void {
   });
   execSync(`composer dump-autoload -a -o${devParams}`, executorOptions);
   if (existsSync(`${destination}/bin/console`)) {
-    execSync(`php bin/console assets:install${assetParams} public --no-interaction`, executorOptions);
+    execSync(
+      `php -d memory_limit=-1 bin/console assets:install${assetParams} public --no-interaction`,
+      executorOptions,
+    );
   }
   if (fs.existsSync(`${destination}/var/`)) {
     fs.rmSync(`${destination}/var`, { recursive: true, force: true });
