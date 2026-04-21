@@ -181,7 +181,7 @@ describe('Lint Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
     expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --format=gitlab > gl-cs-fixer.json 2>/dev/null || true',
+      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --format=gitlab > gl-cs-fixer.json 2>/dev/null',
       expectedOptions,
     );
     expect(output.success).toBe(true);
@@ -209,7 +209,7 @@ describe('Lint Executor', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1);
     expect(cp.execSync).toHaveBeenCalledWith(
-      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=gitlab > gl-phpstan.json 2>/dev/null || true',
+      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=gitlab > gl-phpstan.json 2>/dev/null',
       expectedOptions,
     );
     expect(output.success).toBe(true);
