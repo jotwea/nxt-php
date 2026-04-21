@@ -41,7 +41,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
       const fileParts = options.outputFile.split('.');
       const fileEnding = fileParts.pop();
       const pathToOutputFile = fileParts.join('.') + '-cs-fixer.' + fileEnding;
-      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null || true';
+      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null';
     }
     execSync(
       `php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no${lintParams}`.trim(),
@@ -62,7 +62,7 @@ export default async function runExecutor(options: LintExecutorSchema, context: 
       const fileParts = options.outputFile.split('.');
       const fileEnding = fileParts.pop();
       const pathToOutputFile = fileParts.join('.') + '-phpstan.' + fileEnding;
-      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null || true';
+      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null';
     }
 
     execSync(
