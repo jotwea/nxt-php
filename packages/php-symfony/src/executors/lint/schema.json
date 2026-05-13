@@ -5,6 +5,30 @@
   "title": "Lint executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "outputFile": {
+      "type": "string",
+      "description": "Base path for report output files (e.g. 'gl.json'). When set, reportScripts are run individually and their output is written to derived filenames."
+    },
+    "reportScripts": {
+      "type": "array",
+      "description": "Composer scripts that produce file reports when outputFile is set. Each entry maps a script name to a filename suffix.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "Composer script name (e.g. 'lint-cs-ci')"
+          },
+          "suffix": {
+            "type": "string",
+            "description": "Suffix inserted before the file extension (e.g. 'cs-fixer' -> 'gl-cs-fixer.json')"
+          }
+        },
+        "required": ["script", "suffix"],
+        "additionalProperties": false
+      }
+    }
+  },
   "required": []
 }
