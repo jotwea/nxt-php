@@ -64,6 +64,9 @@
       "preVersionCommand": "npx nx run-many -t build",
       "manifestRootsToUpdate": ["dist/{projectRoot}"]
     },
+    "publish": {
+      "packageRoot": "dist/{projectRoot}"
+    },
     "changelog": {
       "workspaceChangelog": {
         "createRelease": "github"
