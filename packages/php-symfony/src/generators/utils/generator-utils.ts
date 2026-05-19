@@ -1,4 +1,4 @@
-import { getWorkspaceLayout, names, Tree } from '@nx/devkit';
+import { names, readNxJson, Tree } from '@nx/devkit';
 import { PhpSymfonyGeneratorSchema } from '../application/schema';
 
 export interface NormalizedSchema extends PhpSymfonyGeneratorSchema {
@@ -6,6 +6,12 @@ export interface NormalizedSchema extends PhpSymfonyGeneratorSchema {
   projectRoot: string;
   projectDirectory: string;
   parsedTags: string[];
+}
+
+function getProjectBaseDir(tree: Tree, projectDir: 'appsDir' | 'libsDir'): string {
+  const nxJson = readNxJson(tree);
+  const defaults = { appsDir: 'apps', libsDir: 'libs' };
+  return nxJson?.workspaceLayout?.[projectDir] ?? defaults[projectDir];
 }
 
 export function normalizeOptions(
@@ -16,7 +22,7 @@ export function normalizeOptions(
   const name = names(options.name).fileName;
   const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
   const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(tree)[projectDir]}/${projectDirectory}`;
+  const projectRoot = `${getProjectBaseDir(tree, projectDir)}/${projectDirectory}`;
   const parsedTags = options.tags ? options.tags.split(',').map((s) => s.trim()) : [];
 
   return {
