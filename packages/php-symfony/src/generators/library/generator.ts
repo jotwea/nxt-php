@@ -5,7 +5,7 @@ import { exec } from 'child_process';
 import { defaultLintOptions, normalizeOptions } from '../utils/generator-utils';
 
 export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
-  const normalizedOptions = normalizeOptions(tree, options, 'libsDir');
+  const normalizedOptions = normalizeOptions(tree, options, 'library');
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
     projectType: 'library',
