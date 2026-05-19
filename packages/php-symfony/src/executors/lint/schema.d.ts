@@ -1,6 +1,9 @@
+export interface ReportScript {
+  script: string;
+  suffix: string;
+}
+
 export interface LintExecutorSchema {
-  format?: string;
   outputFile?: string;
-  fix?: boolean;
-  ignoreEnv?: boolean;
+  reportScripts?: ReportScript[];
 }

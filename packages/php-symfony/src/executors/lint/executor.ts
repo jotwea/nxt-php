@@ -1,103 +1,50 @@
 import { LintExecutorSchema } from './schema';
-import { getCwd, getExecutorOptions } from '../utils/executor-utils';
-import { execSync } from 'child_process';
-import { existsSync, readdirSync } from 'fs';
+import { getCwd, getEnv } from '../utils/executor-utils';
+import * as childProcess from 'child_process';
 import { ExecutorContext } from '@nx/devkit';
+
+function buildReportFilePath(outputFile: string, suffix: string): string {
+  const parts = outputFile.split('.');
+  const ext = parts.pop();
+  return `${parts.join('.')}-${suffix}.${ext}`;
+}
+
+function runComposerScript(script: string, cwd: string, env: NodeJS.ProcessEnv, redirect?: string): boolean {
+  const cmd = redirect ? `composer run ${script} > ${redirect} 2>/dev/null` : `composer run ${script}`;
+
+  try {
+    childProcess.execSync(cmd, { cwd, env, stdio: 'inherit' });
+    return true;
+  } catch (e) {
+    const msg: string = (e as Error).message ?? '';
+    if (msg.includes('Script') && msg.includes('not defined')) {
+      return true;
+    }
+    return false;
+  }
+}
 
 export default async function runExecutor(options: LintExecutorSchema, context: ExecutorContext) {
   const cwd = getCwd(context);
-  const commonParams = context.isVerbose ? '-vvv' : '';
+  const env = { ...getEnv() };
 
-  const relevantDirectories = readdirSync(cwd, { withFileTypes: true })
-    .filter((dir) => dir.isDirectory())
-    .map((dir) => dir.name)
-    .filter((name) => name !== 'var' && name !== 'vendor');
-
-  if (existsSync(`${cwd}/vendor/bin/parallel-lint`)) {
-    console.info('Linting PHP...');
-    execSync(
-      `php vendor/bin/parallel-lint --colors ${relevantDirectories.join(' ')}`.trim(),
-      getExecutorOptions(context),
-    );
+  if (!options.outputFile) {
+    const success = runComposerScript('lint', cwd, env);
+    return { success };
   }
 
-  if (existsSync(`${cwd}/vendor/bin/php-cs-fixer`)) {
-    console.info('Linting using PHP-CS-Fixer...');
-
-    const executorOptions = getExecutorOptions(context);
-    if (options.ignoreEnv) {
-      executorOptions.env.PHP_CS_FIXER_IGNORE_ENV = '1';
-    }
-    let lintParams = options.fix ? '' : ' --dry-run';
-    if (options.format) {
-      lintParams += ` --format=${options.format}`;
-    }
-    if (commonParams){
-      lintParams += ' ' + commonParams;
-    }
-
-    if (options.outputFile) {
-      // in case of a given outputFile the results will be written to the file and errors will be ignored
-      const fileParts = options.outputFile.split('.');
-      const fileEnding = fileParts.pop();
-      const pathToOutputFile = fileParts.join('.') + '-cs-fixer.' + fileEnding;
-      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null';
-    }
-    execSync(
-      `php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no${lintParams}`.trim(),
-      executorOptions,
-    );
+  const staticOk = runComposerScript('lint-static', cwd, env);
+  if (!staticOk) {
+    return { success: false };
   }
 
-  if (existsSync(`${cwd}/vendor/bin/phpstan`)) {
-    console.info('Linting using PHPStan...');
-
-    let lintParams = options.format ? ` --error-format=${options.format}` : '';
-    if (commonParams){
-      lintParams += ' ' + commonParams;
-    }
-
-    if (options.outputFile) {
-      // in case of a given outputFile the results will be written to the file and errors will be ignored
-      const fileParts = options.outputFile.split('.');
-      const fileEnding = fileParts.pop();
-      const pathToOutputFile = fileParts.join('.') + '-phpstan.' + fileEnding;
-      lintParams += ' > ' + pathToOutputFile + ' 2>/dev/null';
-    }
-
-    execSync(
-      `php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress${lintParams}`.trim(),
-      getExecutorOptions(context),
-    );
-  }
-
-  if (existsSync(`${cwd}/bin/console`)) {
-    console.info('Linting container...');
-    execSync(`php bin/console lint:container ${commonParams}`.trim(), getExecutorOptions(context));
-
-    if (existsSync(`${cwd}/vendor/symfony/yaml`)) {
-      console.info('Linting YAML...');
-      execSync(
-        `php bin/console lint:yaml --parse-tags ${relevantDirectories.join(' ')} ${commonParams}`.trim(),
-        getExecutorOptions(context),
-      );
-    }
-
-    if (existsSync(`${cwd}/vendor/symfony/twig-bundle`)) {
-      console.info('Linting Twig...');
-      execSync(
-        `php bin/console lint:twig --show-deprecations ${relevantDirectories.join(' ')} ${commonParams}`.trim(),
-        getExecutorOptions(context),
-      );
-    }
-
-    if (existsSync(`${cwd}/vendor/doctrine/doctrine-bundle`)) {
-      console.info('Linting Doctrine schema...');
-      execSync(`php bin/console doctrine:schema:validate --skip-sync`, getExecutorOptions(context));
+  for (const { script, suffix } of options.reportScripts ?? []) {
+    const redirect = buildReportFilePath(options.outputFile, suffix);
+    const ok = runComposerScript(script, cwd, env, redirect);
+    if (!ok) {
+      return { success: false };
     }
   }
-
-  console.info('Done Linting.');
 
   return { success: true };
 }

@@ -1,28 +1,7 @@
 import { ExecutorContext } from '@nx/devkit';
 import { LintExecutorSchema } from './schema';
+import * as childProcess from 'child_process';
 import executor from './executor';
-
-// mock exec of child_process
-jest.mock('child_process', () => ({
-  exec: jest.fn((command, options, callback) => {
-    if (callback) callback(null, { stdout: '' });
-  }),
-  execSync: jest.fn((command, options, callback) => {
-    if (callback) callback(null, { stdout: '' });
-  }),
-}));
-import * as cp from 'child_process';
-
-jest.mock('fs', () => ({
-  readdirSync: jest.fn(() => [
-    { name: 'project.json', isDirectory: () => false },
-    { name: 'config', isDirectory: () => true },
-    { name: 'src', isDirectory: () => true },
-    { name: 'vendor', isDirectory: () => true },
-  ]),
-  existsSync: jest.fn(() => false),
-}));
-import * as fs from 'fs';
 
 describe('Lint Executor', () => {
   const expectedEnv = {
@@ -32,10 +11,16 @@ describe('Lint Executor', () => {
     COMPOSER_HOME: expect.any(String),
     APPDATA: expect.any(String),
   };
-  const expectedOptions = { cwd: '/root/apps/symfony', env: expectedEnv, stdio: 'inherit' };
+
+  const expectedOptions = {
+    cwd: '/root/apps/symfony',
+    env: expectedEnv,
+    stdio: 'inherit',
+  };
 
   let options: LintExecutorSchema;
   let context: ExecutorContext;
+  let execSyncSpy: jest.SpyInstance;
 
   beforeEach(() => {
     options = {};
@@ -43,183 +28,168 @@ describe('Lint Executor', () => {
       root: '/root',
       cwd: '/root',
       projectName: 'my-app',
-      targetName: 'build',
+      targetName: 'lint',
       nxJsonConfiguration: {},
       projectsConfigurations: {
         version: 2,
         projects: {
           'my-app': {
             root: 'apps/symfony',
-            sourceRoot: 'apps/symfony',
           },
         },
       },
       projectGraph: { nodes: {}, dependencies: {} },
       isVerbose: false,
     };
+    execSyncSpy = jest.spyOn(childProcess, 'execSync').mockReturnValue(Buffer.from(''));
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    execSyncSpy.mockRestore();
   });
 
-  it('can lint [PHP only]', async () => {
-    const output = await executor(options, context);
+  describe('without outputFile', () => {
+    it('runs composer run lint', async () => {
+      const output = await executor(options, context);
 
-    expect(cp.execSync).not.toHaveBeenCalled();
-    expect(output.success).toBe(true);
+      expect(execSyncSpy).toHaveBeenCalledTimes(1);
+      expect(execSyncSpy).toHaveBeenCalledWith('composer run lint', expectedOptions);
+      expect(output.success).toBe(true);
+    });
+
+    it('returns success when lint script is not defined in composer.json', async () => {
+      execSyncSpy.mockImplementation(() => {
+        throw new Error("Script 'lint' not defined in this package");
+      });
+
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(true);
+    });
+
+    it('returns failure when lint script exits with a real error', async () => {
+      execSyncSpy.mockImplementation(() => {
+        throw new Error('Command failed: composer run lint');
+      });
+
+      const output = await executor(options, context);
+
+      expect(output.success).toBe(false);
+    });
   });
 
-  it('can lint [container only]', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/bin/console');
-    const output = await executor(options, context);
+  describe('with outputFile and reportScripts', () => {
+    beforeEach(() => {
+      options.outputFile = 'gl.json';
+      options.reportScripts = [
+        { script: 'lint-cs-ci', suffix: 'cs-fixer' },
+        { script: 'phpstan-ci', suffix: 'phpstan' },
+      ];
+    });
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
-    expect(output.success).toBe(true);
-  });
+    it('runs lint-static first, then each report script with a derived output path', async () => {
+      const output = await executor(options, context);
 
-  it('can lint [PHP+container]', async () => {
-    jest
-      .spyOn(fs, 'existsSync')
-      .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/bin/parallel-lint',
+      expect(execSyncSpy).toHaveBeenCalledTimes(3);
+      expect(execSyncSpy).toHaveBeenNthCalledWith(1, 'composer run lint-static', expectedOptions);
+      expect(execSyncSpy).toHaveBeenNthCalledWith(
+        2,
+        'composer run lint-cs-ci > gl-cs-fixer.json 2>/dev/null',
+        expectedOptions,
       );
-    const output = await executor(options, context);
-
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
-    expect(cp.execSync).toHaveBeenCalledWith(`php vendor/bin/parallel-lint --colors config src`, expectedOptions);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
-    expect(output.success).toBe(true);
-  });
-
-  it('can lint [container+Twig]', async () => {
-    jest
-      .spyOn(fs, 'existsSync')
-      .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/twig-bundle',
+      expect(execSyncSpy).toHaveBeenNthCalledWith(
+        3,
+        'composer run phpstan-ci > gl-phpstan.json 2>/dev/null',
+        expectedOptions,
       );
-    const output = await executor(options, context);
+      expect(output.success).toBe(true);
+    });
 
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `php bin/console lint:twig --show-deprecations config src`,
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+    it('derives report filenames correctly for nested paths', async () => {
+      options.outputFile = 'reports/gl.json';
 
-  it('can lint [container+YAML]', async () => {
-    jest
-      .spyOn(fs, 'existsSync')
-      .mockImplementation(
-        (path) => path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/symfony/yaml',
+      const output = await executor(options, context);
+
+      expect(execSyncSpy).toHaveBeenNthCalledWith(
+        2,
+        'composer run lint-cs-ci > reports/gl-cs-fixer.json 2>/dev/null',
+        expectedOptions,
       );
-    const output = await executor(options, context);
-
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:yaml --parse-tags config src`, expectedOptions);
-    expect(output.success).toBe(true);
-  });
-
-  it('can lint [container+doctrine]', async () => {
-    jest
-      .spyOn(fs, 'existsSync')
-      .mockImplementation(
-        (path) =>
-          path === '/root/apps/symfony/bin/console' || path === '/root/apps/symfony/vendor/doctrine/doctrine-bundle',
+      expect(execSyncSpy).toHaveBeenNthCalledWith(
+        3,
+        'composer run phpstan-ci > reports/gl-phpstan.json 2>/dev/null',
+        expectedOptions,
       );
-    const output = await executor(options, context);
+      expect(output.success).toBe(true);
+    });
 
-    expect(cp.execSync).toHaveBeenCalledTimes(2);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console lint:container`, expectedOptions);
-    expect(cp.execSync).toHaveBeenCalledWith(`php bin/console doctrine:schema:validate --skip-sync`, expectedOptions);
-    expect(output.success).toBe(true);
-  });
+    it('aborts after lint-static failure without running report scripts', async () => {
+      execSyncSpy.mockImplementationOnce(() => {
+        throw new Error('Command failed: composer run lint-static');
+      });
 
-  it('can lint [PHP-CS-Fixer] with default options', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
-    const output = await executor(options, context);
+      const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --dry-run',
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+      expect(execSyncSpy).toHaveBeenCalledTimes(1);
+      expect(output.success).toBe(false);
+    });
 
-  it('can lint [PHP-CS-Fixer] and ignore env', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
-    options.fix = true;
-    options.ignoreEnv = true;
-    const expectedOptions = {
-      cwd: '/root/apps/symfony',
-      env: { ...expectedEnv, PHP_CS_FIXER_IGNORE_ENV: expect.any(String) },
-      stdio: 'inherit',
-    };
+    it('returns failure when a report script exits with a real error', async () => {
+      execSyncSpy.mockReturnValueOnce(Buffer.from('')).mockImplementationOnce(() => {
+        throw new Error('Command failed: composer run lint-cs-ci');
+      });
 
-    const output = await executor(options, context);
+      const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no',
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+      expect(execSyncSpy).toHaveBeenCalledTimes(2);
+      expect(output.success).toBe(false);
+    });
 
-  it('can lint [PHP-CS-Fixer] with all options', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/php-cs-fixer');
-    options.format = 'gitlab';
-    options.outputFile = 'gl.json';
-    options.fix = true;
+    it('returns success when lint-static is not defined in composer.json', async () => {
+      execSyncSpy
+        .mockImplementationOnce(() => {
+          throw new Error("Script 'lint-static' not defined in this package");
+        })
+        .mockReturnValue(Buffer.from(''));
 
-    const output = await executor(options, context);
+      const output = await executor(options, context);
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'php vendor/bin/php-cs-fixer fix --config=php_cs_fixer.dist.php --diff --using-cache=no --format=gitlab > gl-cs-fixer.json 2>/dev/null',
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+      expect(execSyncSpy).toHaveBeenCalledTimes(3);
+      expect(output.success).toBe(true);
+    });
 
-  it('can lint [PHPStan] with default options', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/phpstan');
-    const output = await executor(options, context);
+    it('returns success when a report script is not defined in composer.json', async () => {
+      execSyncSpy
+        .mockReturnValueOnce(Buffer.from(''))
+        .mockImplementationOnce(() => {
+          throw new Error("Script 'lint-cs-ci' not defined in this package");
+        })
+        .mockReturnValueOnce(Buffer.from(''));
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress',
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+      const output = await executor(options, context);
 
-  it('can lint [PHPStan] with all options', async () => {
-    jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === '/root/apps/symfony/vendor/bin/phpstan');
-    options.format = 'gitlab';
-    options.outputFile = 'gl.json';
-    options.fix = true;
+      expect(execSyncSpy).toHaveBeenCalledTimes(3);
+      expect(output.success).toBe(true);
+    });
 
-    const output = await executor(options, context);
+    it('runs only lint-static when reportScripts is empty', async () => {
+      options.reportScripts = [];
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1);
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'php -d memory_limit=-1 vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=gitlab > gl-phpstan.json 2>/dev/null',
-      expectedOptions,
-    );
-    expect(output.success).toBe(true);
-  });
+      const output = await executor(options, context);
 
-  it('can lint all components', async () => {
-    jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    const output = await executor(options, context);
+      expect(execSyncSpy).toHaveBeenCalledTimes(1);
+      expect(execSyncSpy).toHaveBeenCalledWith('composer run lint-static', expectedOptions);
+      expect(output.success).toBe(true);
+    });
 
-    expect(cp.execSync).toHaveBeenCalledTimes(7);
-    expect(output.success).toBe(true);
+    it('runs only lint-static when reportScripts is not set', async () => {
+      delete options.reportScripts;
+
+      const output = await executor(options, context);
+
+      expect(execSyncSpy).toHaveBeenCalledTimes(1);
+      expect(execSyncSpy).toHaveBeenCalledWith('composer run lint-static', expectedOptions);
+      expect(output.success).toBe(true);
+    });
   });
 });
