@@ -1,0 +1,7 @@
+tasks:
+  install:
+    name: Install dependencies
+    description: Install npm dependencies.
+    command: npm install
+    triggeredBy:
+      - postDevcontainerStart

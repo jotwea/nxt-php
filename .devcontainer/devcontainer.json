@@ -1,0 +1,13 @@
+{
+  "name": "nxt-php",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node": {
+      "version": "24"
+    },
+    "ghcr.io/devcontainers/features/php": {},
+    "ghcr.io/devcontainers/features/composer": {}
+  },
+  "forwardPorts": [],
+  "portsAttributes": {}
+}
