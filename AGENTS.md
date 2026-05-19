@@ -25,6 +25,14 @@ npx nx run php-symfony:lint
 npx nx run php-symfony-e2e:e2e
 ```
 
+## Before Every Commit
+
+```bash
+npx nx format:check
+```
+
+Fix formatting issues with `npx prettier --write <file>` before committing.
+
 ## Before Opening a PR
 
 ```bash
