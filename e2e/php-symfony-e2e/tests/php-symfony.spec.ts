@@ -3,14 +3,17 @@ import { checkFilesExist, ensureNxProject, readJson, runNxCommandAsync, uniq } f
 describe('php-symfony e2e', () => {
   const timeout = 240000;
 
+  beforeAll(() => {
+    ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
+  });
+
   it(
     'should create php-symfony application',
     async () => {
       const projectName = uniq('php-symfony');
-      ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
       await runNxCommandAsync(`generate @nxt-php/php-symfony:application ${projectName}`);
 
-      const result = await runNxCommandAsync(`build ${projectName}`);
+      await runNxCommandAsync(`build ${projectName}`);
       expect(() =>
         checkFilesExist(
           `${projectName}/composer.json`,
@@ -29,10 +32,9 @@ describe('php-symfony e2e', () => {
     'should create php-symfony library',
     async () => {
       const projectName = uniq('php-symfony');
-      ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
       await runNxCommandAsync(`generate @nxt-php/php-symfony:library ${projectName}`);
 
-      const result = await runNxCommandAsync(`build ${projectName}`);
+      await runNxCommandAsync(`build ${projectName}`);
       expect(() =>
         checkFilesExist(
           `${projectName}/composer.json`,
@@ -49,12 +51,11 @@ describe('php-symfony e2e', () => {
 
   describe('--directory', () => {
     it(
-      'should create src in the specified directory',
+      'should create project in the specified directory',
       async () => {
         const projectName = uniq('php-symfony');
-        ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
         await runNxCommandAsync(`generate @nxt-php/php-symfony:library ${projectName} --directory subdir`);
-        expect(() => checkFilesExist(`subdir/${projectName}/src/index.ts`)).not.toThrow();
+        expect(() => checkFilesExist(`libs/subdir/${projectName}/composer.json`)).not.toThrow();
       },
       timeout,
     );
@@ -65,9 +66,8 @@ describe('php-symfony e2e', () => {
       'should add tags to the project',
       async () => {
         const projectName = uniq('php-symfony');
-        ensureNxProject('@nxt-php/php-symfony', 'dist/packages/php-symfony');
         await runNxCommandAsync(`generate @nxt-php/php-symfony:library ${projectName} --tags e2etag,e2ePackage`);
-        const project = readJson(`${projectName}/project.json`);
+        const project = readJson(`libs/${projectName}/project.json`);
         expect(project.tags).toEqual(['e2etag', 'e2ePackage']);
       },
       timeout,
