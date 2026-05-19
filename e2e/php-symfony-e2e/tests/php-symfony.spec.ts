@@ -16,12 +16,12 @@ describe('php-symfony e2e', () => {
       await runNxCommandAsync(`build ${projectName}`);
       expect(() =>
         checkFilesExist(
-          `${projectName}/composer.json`,
-          `${projectName}/composer.lock`,
-          `${projectName}/symfony.lock`,
-          `${projectName}/vendor`,
-          `${projectName}/bin/console`,
-          `${projectName}/bin/phpunit`,
+          `apps/${projectName}/composer.json`,
+          `apps/${projectName}/composer.lock`,
+          `apps/${projectName}/symfony.lock`,
+          `apps/${projectName}/vendor`,
+          `apps/${projectName}/bin/console`,
+          `apps/${projectName}/bin/phpunit`,
         ),
       ).not.toThrow();
     },
@@ -37,12 +37,12 @@ describe('php-symfony e2e', () => {
       await runNxCommandAsync(`build ${projectName}`);
       expect(() =>
         checkFilesExist(
-          `${projectName}/composer.json`,
-          `${projectName}/composer.lock`,
-          `${projectName}/symfony.lock`,
-          `${projectName}/vendor`,
-          `${projectName}/bin/console`,
-          `${projectName}/bin/phpunit`,
+          `libs/${projectName}/composer.json`,
+          `libs/${projectName}/composer.lock`,
+          `libs/${projectName}/symfony.lock`,
+          `libs/${projectName}/vendor`,
+          `libs/${projectName}/bin/console`,
+          `libs/${projectName}/bin/phpunit`,
         ),
       ).not.toThrow();
     },
