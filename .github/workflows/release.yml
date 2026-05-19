@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Only allow releases from master
+    if: github.ref == 'refs/heads/master'
+    permissions:
+      contents: write      # git tags + changelog commit
+      id-token: write      # npm provenance
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup git user
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org/
+
+      - run: npm ci
+
+      - name: Release
+        run: npx nx release --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -45,10 +45,32 @@
     "@nx/eslint:lint": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json", "{workspaceRoot}/eslint.config.cjs"],
       "cache": true
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
     }
   },
   "useInferencePlugins": false,
   "defaultBase": "origin/master",
   "neverConnectToCloud": true,
-  "analytics": false
+  "analytics": false,
+  "release": {
+    "projects": ["packages/*"],
+    "projectsRelationship": "fixed",
+    "version": {
+      "conventionalCommits": true,
+      "preVersionCommand": "npx nx run-many -t build",
+      "manifestRootsToUpdate": ["dist/{projectRoot}"]
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
+    },
+    "git": {
+      "commitMessage": "chore(release): publish {version} [skip ci]"
+    }
+  }
 }
