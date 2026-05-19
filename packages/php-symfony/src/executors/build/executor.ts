@@ -10,13 +10,17 @@ export default async function runExecutor(options: BuildExecutorSchema, context:
     ? `${context.cwd}/${options.outputPath}`
     : `${context.cwd}/dist/${getProjectPath(context)}`;
 
-  console.info('Building ...');
-  prepare(destination, options.cleanDestinationDir);
-  copy(`${getExecutorOptions(context).cwd}`, destination);
-  build(context, destination);
-  console.info('Done building.');
-
-  return { success: true };
+  try {
+    console.info('Building ...');
+    prepare(destination, options.cleanDestinationDir);
+    copy(`${getExecutorOptions(context).cwd}`, destination);
+    build(context, destination);
+    console.info('Done building.');
+    return { success: true };
+  } catch (e) {
+    console.error((e as Error).message);
+    return { success: false };
+  }
 }
 
 function prepare(destination: string, clean: boolean): void {

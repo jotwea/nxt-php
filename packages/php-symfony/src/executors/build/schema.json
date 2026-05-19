@@ -5,6 +5,16 @@
   "title": "Build executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "outputPath": {
+      "type": "string",
+      "description": "Output path for the build artifacts, relative to the workspace root. Defaults to dist/{projectRoot}."
+    },
+    "cleanDestinationDir": {
+      "type": "boolean",
+      "description": "Delete the output directory before building.",
+      "default": false
+    }
+  },
   "required": []
 }
