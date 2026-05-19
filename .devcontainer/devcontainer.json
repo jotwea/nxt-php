@@ -11,9 +11,7 @@
   },
   "customizations": {
     "vscode": {
-      "extensions": [
-        "bmewburn.vscode-intelephense-client"
-      ]
+      "extensions": ["bmewburn.vscode-intelephense-client"]
     }
   },
   "forwardPorts": [],
