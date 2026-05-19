@@ -42,3 +42,5 @@ Thumbs.db
 .nx/workspace-data
 .claude/worktrees
 .claude/settings.local.json
+.nx/polygraph
+.nx/self-healing
