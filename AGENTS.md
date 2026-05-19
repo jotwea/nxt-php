@@ -45,6 +45,7 @@ Fix all lint and test failures before pushing. Do not open a PR with a failing C
 
 Releases are triggered manually via the **Release** GitHub Actions workflow (`workflow_dispatch` on `master`).  
 The workflow runs `nx release`, which:
+
 1. Bumps versions based on Conventional Commits
 2. Generates / updates `CHANGELOG.md`
 3. Creates a Git tag and GitHub Release
