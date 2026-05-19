@@ -5,6 +5,29 @@
   "title": "Lint executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "outputFile": {
+      "type": "string",
+      "description": "Base path for report output files (e.g. gl.json). When set, lint-static runs first, then each reportScripts entry writes to a derived path."
+    },
+    "reportScripts": {
+      "type": "array",
+      "description": "Composer scripts to run when outputFile is set, each writing to a derived output path.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "Composer script name"
+          },
+          "suffix": {
+            "type": "string",
+            "description": "Suffix inserted before the file extension in the output filename"
+          }
+        },
+        "required": ["script", "suffix"]
+      }
+    }
+  },
   "required": []
 }

@@ -45,5 +45,14 @@ describe('php-symfony generator', () => {
 
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();
+    expect(config.targets.lint).toEqual({
+      executor: '@nxt-php/php-symfony:lint',
+      options: {
+        reportScripts: [
+          { script: 'lint-cs-ci', suffix: 'cs-fixer' },
+          { script: 'phpstan-ci', suffix: 'phpstan' },
+        ],
+      },
+    });
   });
 });
