@@ -24,12 +24,16 @@ export default async function runExecutor(options: E2ETestExecutorSchema, contex
     phpUnitParams = [...phpUnitParams, '--verbose'];
   }
 
-  console.info('E2E Testing using phpunit...');
-  execSync(
-    `php ${phpParams.join(' ')} vendor/bin/phpunit tests_e2e ${phpUnitParams.join(' ')}`.trim(),
-    getExecutorOptions(context),
-  );
-  console.info('Done E2E testing.');
-
-  return { success: true };
+  try {
+    console.info('E2E Testing using phpunit...');
+    execSync(
+      `php ${phpParams.join(' ')} vendor/bin/phpunit tests_e2e ${phpUnitParams.join(' ')}`.trim(),
+      getExecutorOptions(context),
+    );
+    console.info('Done E2E testing.');
+    return { success: true };
+  } catch (e) {
+    console.error((e as Error).message);
+    return { success: false };
+  }
 }

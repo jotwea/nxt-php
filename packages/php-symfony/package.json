@@ -15,6 +15,7 @@
   "generators": "./generators.json",
   "executors": "./executors.json",
   "peerDependencies": {
-    "@nx/workspace": ">=17.0.0"
+    "@nx/devkit": "^22.0.0",
+    "@nx/workspace": "^22.0.0"
   }
 }

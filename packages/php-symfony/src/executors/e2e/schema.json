@@ -5,6 +5,17 @@
   "title": "E2E Test executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "codeCoverage": {
+      "type": "boolean",
+      "description": "Enable code coverage via pcov.",
+      "default": false
+    },
+    "ci": {
+      "type": "boolean",
+      "description": "Write JUnit and Cobertura coverage reports for CI.",
+      "default": false
+    }
+  },
   "required": []
 }

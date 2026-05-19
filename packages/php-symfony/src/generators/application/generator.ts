@@ -1,52 +1,11 @@
-import {
-  addProjectConfiguration,
-  formatFiles,
-  generateFiles,
-  getWorkspaceLayout,
-  names,
-  offsetFromRoot,
-  Tree,
-} from '@nx/devkit';
-import * as path from 'path';
+import { addProjectConfiguration, formatFiles, Tree } from '@nx/devkit';
 import { PhpSymfonyGeneratorSchema } from './schema';
 import { promisify } from 'util';
 import { exec } from 'child_process';
-
-interface NormalizedSchema extends PhpSymfonyGeneratorSchema {
-  projectName: string;
-  projectRoot: string;
-  projectDirectory: string;
-  parsedTags: string[];
-}
-
-function normalizeOptions(tree: Tree, options: PhpSymfonyGeneratorSchema): NormalizedSchema {
-  const name = names(options.name).fileName;
-  const projectDirectory = options.directory ? `${names(options.directory).fileName}/${name}` : name;
-  const projectName = projectDirectory.replace(new RegExp('/', 'g'), '-');
-  const projectRoot = `${getWorkspaceLayout(tree).appsDir}/${projectDirectory}`;
-  const parsedTags = options.tags ? options.tags.split(',').map((s) => s.trim()) : [];
-
-  return {
-    ...options,
-    projectName,
-    projectRoot,
-    projectDirectory,
-    parsedTags,
-  };
-}
-
-function addFiles(tree: Tree, options: NormalizedSchema) {
-  const templateOptions = {
-    ...options,
-    ...names(options.name),
-    offsetFromRoot: offsetFromRoot(options.projectRoot),
-    template: '',
-  };
-  generateFiles(tree, path.join(__dirname, 'files'), options.projectRoot, templateOptions);
-}
+import { defaultLintOptions, normalizeOptions } from '../utils/generator-utils';
 
 export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
-  const normalizedOptions = normalizeOptions(tree, options);
+  const normalizedOptions = normalizeOptions(tree, options, 'application');
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
     projectType: 'application',
@@ -67,12 +26,7 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
       },
       lint: {
         executor: '@nxt-php/php-symfony:lint',
-        options: {
-          reportScripts: [
-            { script: 'lint-cs-ci', suffix: 'cs-fixer' },
-            { script: 'phpstan-ci', suffix: 'phpstan' },
-          ],
-        },
+        options: defaultLintOptions,
       },
       test: {
         executor: '@nxt-php/php-symfony:test',
@@ -91,6 +45,5 @@ export default async function (tree: Tree, options: PhpSymfonyGeneratorSchema) {
     { cwd: normalizedOptions.projectRoot },
   );
 
-  addFiles(tree, normalizedOptions);
   await formatFiles(tree);
 }

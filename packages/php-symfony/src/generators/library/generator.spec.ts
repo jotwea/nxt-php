@@ -45,6 +45,7 @@ describe('php-symfony generator', () => {
 
     const config = readProjectConfiguration(appTree, 'test');
     expect(config).toBeDefined();
+    expect(config.targets.e2e).toBeUndefined();
     expect(config.targets.lint).toEqual({
       executor: '@nxt-php/php-symfony:lint',
       options: {
