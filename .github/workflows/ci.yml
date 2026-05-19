@@ -25,6 +25,11 @@ jobs:
           node-version: 24
           cache: npm
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+
       - run: npm ci
 
       - run: npx nx format:check
