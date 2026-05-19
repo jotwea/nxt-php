@@ -5,8 +5,9 @@
     "ghcr.io/devcontainers/features/node": {
       "version": "24"
     },
-    "ghcr.io/devcontainers/features/php": {},
-    "ghcr.io/devcontainers/features/composer": {}
+    "ghcr.io/devcontainers/features/php": {
+      "installComposer": true
+    }
   },
   "forwardPorts": [],
   "portsAttributes": {}
