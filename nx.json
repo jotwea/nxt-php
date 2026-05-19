@@ -70,6 +70,7 @@
       "preVersionCommand": "npx nx run-many -t build",
       "manifestRootsToUpdate": ["dist/{projectRoot}"]
     },
+    "releaseTagPattern": "{version}",
     "publish": {
       "packageRoot": "dist/{projectRoot}"
     },
