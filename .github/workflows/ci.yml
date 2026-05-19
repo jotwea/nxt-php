@@ -13,6 +13,9 @@ concurrency:
 jobs:
   main:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      NODE_OPTIONS: --experimental-vm-modules
     steps:
       - uses: actions/checkout@v4
         with:
