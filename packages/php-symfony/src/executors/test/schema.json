@@ -5,6 +5,22 @@
   "title": "Test executor",
   "description": "",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "codeCoverage": {
+      "type": "boolean",
+      "description": "Enable code coverage via pcov.",
+      "default": false
+    },
+    "ci": {
+      "type": "boolean",
+      "description": "Write JUnit and Cobertura coverage reports for CI.",
+      "default": false
+    },
+    "processes": {
+      "type": "number",
+      "description": "Number of parallel processes for paratest. Uses phpunit when set to 1.",
+      "default": 1
+    }
+  },
   "required": []
 }
