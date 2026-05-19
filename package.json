@@ -14,10 +14,13 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "prepare": "husky"
   },
   "private": true,
   "devDependencies": {
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
     "@nx/devkit": "22.7.2",
     "@nx/eslint": "22.7.2",
     "@nx/eslint-plugin": "22.7.2",
@@ -34,20 +37,13 @@
     "eslint": "^9.8.0",
     "husky": "^9.0.1",
     "jest": "~30.0.5",
+    "jest-util": "^30.0.5",
     "nx": "22.7.2",
     "prettier": "^3.5.1",
-    "pretty-quick": "^4.1.0",
     "ts-jest": "~29.4.6",
     "ts-node": "^10.9.2",
     "tslib": "^2.4.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "~8.53.1",
-    "jest-util": "^30.0.5"
-  },
-  "dependencies": {},
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged --pattern '{packages,e2e}/**/*.{js,jsx,ts,tsx,json,css,scss,md,html}'"
-    }
+    "typescript-eslint": "~8.53.1"
   }
 }
