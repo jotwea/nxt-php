@@ -35,3 +35,8 @@ jobs:
         env:
           NPM_CONFIG_PROVENANCE: true
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Format changelog
+        run: |
+          npx prettier --write CHANGELOG.md
+          git diff --quiet CHANGELOG.md || git commit --amend --no-edit CHANGELOG.md
