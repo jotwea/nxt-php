@@ -3,18 +3,18 @@
 ### 🚀 Features
 
 - add CI pipeline and release workflow ([#8](https://github.com/jotwea/nxt-php/pull/8))
-- ⚠️  delegate lint executor to composer scripts ([#10](https://github.com/jotwea/nxt-php/pull/10))
+- ⚠️ delegate lint executor to composer scripts ([#10](https://github.com/jotwea/nxt-php/pull/10))
 
 ### 🩹 Fixes
 
 - set publish packageRoot to dist/{projectRoot} ([#11](https://github.com/jotwea/nxt-php/pull/11))
 - set releaseTagPattern to match existing tags without v-prefix ([2fb9b86](https://github.com/jotwea/nxt-php/commit/2fb9b86))
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
-- delegate lint executor to composer scripts  ([#10](https://github.com/jotwea/nxt-php/pull/10))
+- delegate lint executor to composer scripts ([#10](https://github.com/jotwea/nxt-php/pull/10))
   removes fix, ignoreEnv, and format options from the lint executor schema. Projects must define composer scripts (lint, lint-static) in composer.json instead.
-  Replaces direct tool detection (parallel-lint, php-cs-fixer, phpstan, bin/console lint:*) with a composer script dispatcher. Tool selection and configuration moves entirely into composer.json.
+  Replaces direct tool detection (parallel-lint, php-cs-fixer, phpstan, bin/console lint:\*) with a composer script dispatcher. Tool selection and configuration moves entirely into composer.json.
   Without outputFile: runs `composer run lint`.
   With outputFile: runs `lint-static` first (aborts on failure), then each reportScripts entry writes to a derived output path.
 
