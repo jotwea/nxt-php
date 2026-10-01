@@ -10,7 +10,7 @@ function buildReportFilePath(outputFile: string, suffix: string): string {
 }
 
 function runComposerScript(script: string, cwd: string, env: NodeJS.ProcessEnv, redirect?: string): boolean {
-  const cmd = redirect ? `composer run ${script} > ${redirect} 2>/dev/null` : `composer run ${script}`;
+  const cmd = redirect ? `composer run ${script} > ${redirect}` : `composer run ${script}`;
 
   try {
     childProcess.execSync(cmd, { cwd, env, stdio: 'inherit' });

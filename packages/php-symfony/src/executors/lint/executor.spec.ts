@@ -87,21 +87,13 @@ describe('Lint Executor', () => {
       ];
     });
 
-    it('runs lint-static first, then each report script with a derived output path', async () => {
+    it('runs lint-static first, then each report script with a derived output path without suppressing stderr', async () => {
       const output = await executor(options, context);
 
       expect(execSyncSpy).toHaveBeenCalledTimes(3);
       expect(execSyncSpy).toHaveBeenNthCalledWith(1, 'composer run lint-static', expectedOptions);
-      expect(execSyncSpy).toHaveBeenNthCalledWith(
-        2,
-        'composer run lint-cs-ci > gl-cs-fixer.json 2>/dev/null',
-        expectedOptions,
-      );
-      expect(execSyncSpy).toHaveBeenNthCalledWith(
-        3,
-        'composer run phpstan-ci > gl-phpstan.json 2>/dev/null',
-        expectedOptions,
-      );
+      expect(execSyncSpy).toHaveBeenNthCalledWith(2, 'composer run lint-cs-ci > gl-cs-fixer.json', expectedOptions);
+      expect(execSyncSpy).toHaveBeenNthCalledWith(3, 'composer run phpstan-ci > gl-phpstan.json', expectedOptions);
       expect(output.success).toBe(true);
     });
 
@@ -112,12 +104,12 @@ describe('Lint Executor', () => {
 
       expect(execSyncSpy).toHaveBeenNthCalledWith(
         2,
-        'composer run lint-cs-ci > reports/gl-cs-fixer.json 2>/dev/null',
+        'composer run lint-cs-ci > reports/gl-cs-fixer.json',
         expectedOptions,
       );
       expect(execSyncSpy).toHaveBeenNthCalledWith(
         3,
-        'composer run phpstan-ci > reports/gl-phpstan.json 2>/dev/null',
+        'composer run phpstan-ci > reports/gl-phpstan.json',
         expectedOptions,
       );
       expect(output.success).toBe(true);
