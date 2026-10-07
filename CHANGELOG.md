@@ -1,3 +1,16 @@
+## 9.0.1 (2026-10-07)
+
+### 🩹 Fixes
+
+- format CHANGELOG.md after nx release ([1c3e520](https://github.com/jotwea/nxt-php/commit/1c3e520))
+- preserve lint report stderr ([c5679e2](https://github.com/jotwea/nxt-php/commit/c5679e2))
+
+### ❤️ Thank You
+
+- Axel Guckelsberger @Guite
+- jotwea
+- Ona
+
 # 9.0.0 (2026-05-19)
 
 ### 🚀 Features
