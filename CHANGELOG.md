@@ -1,3 +1,16 @@
+## 9.0.2 (2026-10-08)
+
+### 🩹 Fixes
+
+- support publishing existing releases ([cea67e8](https://github.com/jotwea/nxt-php/commit/cea67e8))
+- fill executor schemas, add error handling, fix e2e spec ([1a62b03](https://github.com/jotwea/nxt-php/commit/1a62b03))
+- correct file paths in e2e tests to include apps/libs prefix ([eff0a63](https://github.com/jotwea/nxt-php/commit/eff0a63))
+
+### ❤️ Thank You
+
+- jotwea
+- Ona
+
 ## 9.0.1 (2026-10-07)
 
 ### 🩹 Fixes
