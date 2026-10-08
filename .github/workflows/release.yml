@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_version:
+        description: Existing tagged version to publish without creating a new release
+        required: false
+        type: string
 
 jobs:
   release:
@@ -18,6 +23,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout existing release tag
+        if: inputs.publish_version != ''
+        env:
+          PUBLISH_VERSION: ${{ inputs.publish_version }}
+        run: |
+          if [[ ! "$PUBLISH_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid semantic version: $PUBLISH_VERSION" >&2
+            exit 1
+          fi
+          git rev-parse --verify "refs/tags/${PUBLISH_VERSION}^{commit}"
+          git checkout --detach "refs/tags/$PUBLISH_VERSION"
+
       - name: Setup git user
         run: |
           git config user.name "${GITHUB_ACTOR}"
@@ -31,12 +48,31 @@ jobs:
       - run: npm ci
 
       - name: Release
+        if: inputs.publish_version == ''
         run: npx nx release --yes
         env:
           NPM_CONFIG_PROVENANCE: true
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Prepare existing version
+        if: inputs.publish_version != ''
+        run: >-
+          npx nx release version "$PUBLISH_VERSION"
+          --git-commit=false
+          --git-tag=false
+          --git-push=false
+          --stage-changes=false
+        env:
+          PUBLISH_VERSION: ${{ inputs.publish_version }}
+
+      - name: Publish existing version
+        if: inputs.publish_version != ''
+        run: npx nx release publish
+        env:
+          NPM_CONFIG_PROVENANCE: true
+
       - name: Format changelog
+        if: inputs.publish_version == ''
         run: |
           npx prettier --write CHANGELOG.md
           git diff --quiet CHANGELOG.md || git commit --amend --no-edit CHANGELOG.md
