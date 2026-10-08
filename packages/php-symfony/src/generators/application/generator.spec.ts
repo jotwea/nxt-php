@@ -6,6 +6,7 @@ import { PhpSymfonyGeneratorSchema } from './schema';
 
 // mock exec of child_process
 jest.mock('child_process', () => ({
+  ...jest.requireActual('child_process'),
   exec: jest.fn((command, options, callback) => {
     callback(null, { stdout: '' });
   }),

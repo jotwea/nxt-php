@@ -7,12 +7,17 @@
   "implicitDependencies": ["php-symfony"],
   "targets": {
     "e2e": {
-      "executor": "@nx/jest:jest",
+      "dependsOn": ["php-symfony:build"],
       "options": {
-        "jestConfig": "e2e/php-symfony-e2e/jest.config.js",
+        "passWithNoTests": true,
         "runInBand": true
       },
-      "dependsOn": ["php-symfony:build"]
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
+      }
     }
   }
 }
